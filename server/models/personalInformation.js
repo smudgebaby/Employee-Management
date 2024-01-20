@@ -83,5 +83,5 @@ const personalInformationSchema = new mongoose.Schema({
 
 })
 
-const personalInformation = mongoose.model('personalInformation', personalInformationSchema)
+const personalInformation = mongoose.model('PersonalInformation', personalInformationSchema)
 export default {personalInformation}
