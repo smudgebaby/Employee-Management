@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 const personalInformationSchema = new mongoose.Schema({
+  id: Schema.Types.ObjectId,
   firstName: { 
     type: String, 
     required: true 
@@ -83,5 +85,5 @@ const personalInformationSchema = new mongoose.Schema({
 
 })
 
-const personalInformation = mongoose.model('PersonalInformation', personalInformationSchema)
-export default {personalInformation}
+const PersonalInformation = mongoose.model('PersonalInformation', personalInformationSchema)
+export default {PersonalInformation}
