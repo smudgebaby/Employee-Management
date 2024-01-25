@@ -1,14 +1,23 @@
 import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Login from './pages/Login/Login.jsx'
+import SignUp from './pages/SignUp/SignUp.jsx'
+import Error from './pages/Error/Error.jsx'
+import OnboardApplication from './pages/OnboardApplication/OnboardApplication.jsx'
 
 function App() {
 
   return (
-    <>
-
-      <p className="read-the-docs">
-        Hello
-      </p>
-    </>
+    <Router>
+      
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/OnboardApplication' element={<OnboardApplication />} />
+        <Route path='*' element={<Error />} />
+      </Routes>
+    
+    </Router>
   )
 }
 

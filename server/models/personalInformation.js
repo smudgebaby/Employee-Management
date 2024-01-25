@@ -25,12 +25,12 @@ const personalInformationSchema = new mongoose.Schema({
   gender: { 
     type: String, 
     enum: ['Male', 'Female', 'Other'],
-    required: true
+    required: false
   },
   address: {
     building: { 
       type: String, 
-      required: true 
+      required: false 
     },
     street: { 
       type: String, 
@@ -64,7 +64,10 @@ const personalInformationSchema = new mongoose.Schema({
       type: String, 
       enum: ['Citizen', 'Green Card', 'Other'] 
     },
-    workAuthorizationType: String
+    workAuthorizationType: {
+      type: String,
+      enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other'],
+    },
   },
   emergencyContacts: [{
     firstName: String,
@@ -82,6 +85,10 @@ const personalInformationSchema = new mongoose.Schema({
     email: String,
     relationship: String
   },
+  onboardingStatus: {
+    status: {type: String, default: 'not submitted'},
+    feedback: String
+  }
 
 })
 
