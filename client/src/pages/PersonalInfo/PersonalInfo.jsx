@@ -1,8 +1,9 @@
 import EmployeeInfoForm from '../../components/EmployeeInfoForm.jsx'
+import EmergencyContacts from '../../components/EmergencyContacts.jsx'
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
 
-const OnboardApplication = () => {
+const PersonalInfo = () => {
 
   const [formData, setFormData] = useState({
     firstName: 'John',
@@ -88,38 +89,38 @@ const OnboardApplication = () => {
     }
   };
 
+  const handleAddEmergencyContact = () => {
+    const newEmergencyContact = {
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      phone: '',
+      email: '',
+      relationship: '',
+    };
+  
+    const updatedEmergencyContacts = [...formData.emergencyContacts, newEmergencyContact];
+    const updatedFormData = {
+      ...formData,
+      emergencyContacts: updatedEmergencyContacts,
+    };
+
+    setFormData(updatedFormData);
+  };
 
   return (
   <>
-    {formData.onboardingStatus.status === 'rejected' && 
-      <div>
-        <h4>Rejected, please see feedback and resubmit</h4>
-        <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
-      }
 
-    {formData.onboardingStatus.status !== 'pending' && formData.onboardingStatus.status !== 'approved' && 
-    <EmployeeInfoForm 
-      formData={formData} 
-      handleChange={handleChange} 
-      disable={false} 
-      page='onboarding'
-    />}
-
-    {formData.onboardingStatus.status === 'pending' && 
     <EmployeeInfoForm 
       formData={formData} 
       handleChange={handleChange} 
       disable={true} 
-      page='onboarding'
-    />}
-
-    {formData.onboardingStatus.status === 'approved' && 
-      <div>
-        <p>Congratulation! your application has been approved, please go to </p>
-        <Link to='/' >HOME </Link>
-      </div>}
+      handleAddEmergencyContact={handleAddEmergencyContact} 
+      page='personalInfo'
+    />
+      
       
   </>)
 }
 
-export default OnboardApplication;
+export default PersonalInfo;

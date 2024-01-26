@@ -1,15 +1,66 @@
 import React from 'react';
-import { Container, Paper, TextField, Button, Grid, Typography, Select, MenuItem, FormControl, InputLabel, Radio, RadioGroup, FormControlLabel } from '@mui/material';
+import { Container, Paper, TextField, Button, Grid, 
+  Typography, Select, MenuItem, FormControl, 
+  InputLabel, Radio, RadioGroup, FormControlLabel, InputAdornment, styled } from '@mui/material';
 import { useState } from 'react';
+import ImagePreview from './ImagePreview.jsx';
+import EmergencyContacts from './EmergencyContacts.jsx'
+import Reference from './Reference.jsx'
 
-const EmployeeInformationForm = ({formData, handleChange, disable}) => {
+const EmployeeInformationForm = ({formData, handleChange, disable, handleAddEmergencyContact, page}) => {
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(formData?.profilePicture || '');
+  const [disableMode, setDisableMode] = useState(disable);
+  const [tempFormData, setTempFormData] = useState(formData)
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
+    //TODO: handle backend/redux and onboardingStatus.status = 'pending'
+  }
+  console.log(formData)
+
+  const handleEdit = () => {
+    setDisableMode(false)
+    setTempFormData(formData)
   }
 
+  // const handleCancel = () => {
+  //   // setdisableMode(true)
+  //   const confirmDiscard = window.confirm('Do you want to discard changes?');
+    
+  //   if (confirmDiscard) {
+  //     setTempFormData(null);
+  //     setDisableMode(true)
+  //   }
+  // }
 
-  console.log(formData)
+  const handleSave = () => {
+    setDisableMode(true)
+    // TODO: update to backend/redux
+  }
 
   return (
     <Container maxWidth="md">
@@ -22,46 +73,63 @@ const EmployeeInformationForm = ({formData, handleChange, disable}) => {
             {/* Name */}
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="First Name" variant="outlined" name="firstName" 
-              value={formData.firstName} onChange={handleChange} required disabled={disable} />
+              value={formData.firstName} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Last Name" variant="outlined" name="lastName" 
-              value={formData.lastName} onChange={handleChange} required disabled={disable} />
+              value={formData.lastName} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Middle Name" variant="outlined" name="middleName" 
-              value={formData.middleName} onChange={handleChange} disabled={disable} />
+              value={formData.middleName} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Preferred Name" variant="outlined" name="preferredName" 
-              value={formData.preferredName} onChange={handleChange} disabled={disable} />
+              value={formData.preferredName} onChange={handleChange} disabled={disableMode} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              {/* Profile picture upload */}
-              {/* react-dropzone for file uploads */}
             </Grid>
+            <Grid item xs={12} sm={6}>
+                <InputLabel id="image-label" sx={{mb: 1}}>Add Image Link</InputLabel>
+                <TextField fullWidth
+                  placeholder="http://" disabled={disableMode}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button component="label" edge="end" disabled={disableMode} >
+                          Upload
+                          <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <ImagePreview imageUrl={imagePreviewUrl} />
+              </Grid>
             
             {/* Address */}
             <Grid item xs={6}>
               <TextField fullWidth label="Street" variant="outlined" name="address.street" 
-                value={formData.address.street} onChange={handleChange} required disabled={disable} />
+                value={formData.address.street} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="Building" variant="outlined" name="address.building" 
-                value={formData.address.building} onChange={handleChange} disabled={disable} />
+                value={formData.address.building} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="City" variant="outlined" name="address.city" 
-                value={formData.address.city} onChange={handleChange} required disabled={disable} />
+                value={formData.address.city} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="State" variant="outlined" name="address.state" 
-                value={formData.address.state} onChange={handleChange} required disabled={disable} />
+                value={formData.address.state} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="ZIP" variant="outlined" name="address.zip" 
-                value={formData.address.zip} onChange={handleChange} required disabled={disable} />
+                value={formData.address.zip} onChange={handleChange} required disabled={disableMode} />
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -70,23 +138,23 @@ const EmployeeInformationForm = ({formData, handleChange, disable}) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="Cell Phone Number" variant="outlined" name="cellPhoneNumber" 
-              value={formData.cellPhoneNumber} onChange={handleChange} required disabled={disable} />
+              value={formData.cellPhoneNumber} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="Work Phone Number" variant="outlined" name="workPhoneNumber" 
-              value={formData.workPhoneNumber} onChange={handleChange} disabled={disable} />
+              value={formData.workPhoneNumber} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth type="date" label="Date of Birth" variant="outlined" name="dateOfBirth" 
-              value={formData.dateOfBirth} onChange={handleChange} required disabled={disable} />
+              value={formData.dateOfBirth} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="SSN" variant="outlined" name="ssn" 
-              value={formData.ssn} onChange={handleChange} required disabled={disable} />
+              value={formData.ssn} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             
             <Grid item xs={12} sm={6}>
-              <FormControl component="fieldset"  disabled={disable}>
+              <FormControl component="fieldset"  disabled={disableMode}>
                 <RadioGroup row aria-label="gender" name="gender" value={formData.gender} onChange={handleChange}>
                   <FormControlLabel value="Male" control={<Radio />} label="Male" />
                   <FormControlLabel value="Female" control={<Radio />} label="Female" />
@@ -97,7 +165,7 @@ const EmployeeInformationForm = ({formData, handleChange, disable}) => {
 
             {/* Work auth */}
             <Grid item xs={12}>
-              <FormControl component="fieldset"  disabled={disable}>
+              <FormControl component="fieldset"  disabled={disableMode}>
                 <Typography variant="subtitle1" gutterBottom>
                   Are you a permanent resident or citizen of the U.S.?
                 </Typography>
@@ -115,7 +183,7 @@ const EmployeeInformationForm = ({formData, handleChange, disable}) => {
                   <Typography variant="h6">Work Authorization</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <FormControl fullWidth variant="outlined"  disabled={disable}>
+                  <FormControl fullWidth variant="outlined"  disabled={disableMode}>
                     <InputLabel id="workAuthorizationType-label">Work Authorization Type</InputLabel>
                     <Select
                       labelId="workAuthorizationType-label"
@@ -135,109 +203,43 @@ const EmployeeInformationForm = ({formData, handleChange, disable}) => {
                 </Grid>
                 <Grid item xs={6}>
                   <TextField fullWidth type="date" label="Start Date" variant="outlined" name="startWorkAuthorizationDate" 
-                    value={formData.startWorkAuthorizationDate} onChange={handleChange} required disabled={disable} />
+                    value={formData.startWorkAuthorizationDate} onChange={handleChange} required disabled={disableMode} />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField fullWidth type="date" label="End Date" variant="outlined" name="endWorkAuthorizationDate" 
-                    value={formData.endWorkAuthorizationDate} onChange={handleChange} required disabled={disable} />
+                    value={formData.endWorkAuthorizationDate} onChange={handleChange} required disabled={disableMode} />
                 </Grid>
               </Grid>
             )}
  
             {/* Reference */}
-            <Grid item xs={12}>
-              <Typography variant="h6">Reference</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.firstName" label="First Name"
-                value={formData.reference.firstName} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.lastName" label="Last Name"
-                value={formData.reference.lastName} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.middleName" label="Middle Name"
-                value={formData.reference.middleName} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.phone" label="Phone"
-                value={formData.reference.phone} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.email" label="Email"
-                value={formData.reference.email} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField fullWidth
-                name="reference.relationship" label="Relationship"
-                value={formData.reference.relationship} onChange={handleChange} disabled={disable}
-              />
-            </Grid>
-
-
+            {page==='onboarding' && 
+              <Reference contactsData={formData.reference} handleChange={handleChange} disable={disableMode} />
+            }
+            
             {/* Emergency contacts */}
-            <Grid item xs={12}>
-              <Typography variant="h6">Emergency contacts</Typography>
-            </Grid>
-            {formData.emergencyContacts.map((emergencyContact, index) => (
-              <React.Fragment key={index}>
-                <Grid item xs={12}>
-                  <Typography variant="h8">contact {index+1}</Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].firstName`} label="First Name"
-                    value={emergencyContact.firstName} onChange={handleChange} disabled={disable} 
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].lastName`} label="Last Name"
-                    value={emergencyContact.lastName} onChange={handleChange} disabled={disable}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].middleName`} label="Middle Name"
-                    value={emergencyContact.middleName} onChange={handleChange} disabled={disable}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].phone`} label="Phone"
-                    value={emergencyContact.phone} onChange={handleChange} disabled={disable}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].email`} label="Email"
-                    value={emergencyContact.email} onChange={handleChange} disabled={disable}
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth
-                    name={`emergencyContacts[${index}].relationship`} label="Relationship"
-                    value={emergencyContact.relationship} onChange={handleChange} disabled={disable}
-                  />
-                </Grid>
-              </React.Fragment>
-            ))}
-
+            {page==='personalInfo' && 
+              <EmergencyContacts contactsData={formData.emergencyContacts} handleChange={handleChange} disable={disableMode} 
+              handleAddEmergencyContact={handleAddEmergencyContact} />
+            }
           </Grid>
+
+          {page==='onboarding' && 
           <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
             Submit
+          </Button>}
+
+          {(page==='personalInfo') && (!disableMode ? 
+          <>
+          <Button variant="outlined" color="primary" style={{ marginTop: '20px' }} onClick={handleCancel}>
+            Cancel
           </Button>
+          <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={handleSave}>
+            Save
+          </Button></>
+          : <Button variant="outlined" color="primary" style={{ marginTop: '20px' }} onClick={handleEdit}>
+            Edit
+          </Button>)}
         </form>
       </Paper>
     </Container>
