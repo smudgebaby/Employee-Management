@@ -1,11 +1,9 @@
 import EmployeeInfoForm from '../../components/EmployeeInfoForm.jsx'
-import EmergencyContacts from '../../components/EmergencyContacts.jsx'
 import { useState } from 'react';
-import {Link} from 'react-router-dom';
 
 const PersonalInfo = () => {
 
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     firstName: 'John',
     lastName: 'Doe',
     middleName: '',
@@ -55,7 +53,19 @@ const PersonalInfo = () => {
       },
     ],
     onboardingStatus: {status: 'rejected', feedback: 'Wrong zip code'},
-  });
+  };
+
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [tempFormData, setTempFormData] = useState(initialFormData);
+
+  const revertData = () => {
+    setTempFormData(initialFormData)
+  }
+
+  const saveData = () => {
+    setFormData(tempFormData)
+  }
 
 
   const handleChange = (event) => {
@@ -63,18 +73,18 @@ const PersonalInfo = () => {
 
     if (name.startsWith('emergencyContacts')) {
       const [fieldName, index, subFieldName] = name.match(/\[(\d+)\]\.(\w+)/);
-      const updatedEmergencyContacts = [...formData.emergencyContacts];
+      const updatedEmergencyContacts = [...tempFormData.emergencyContacts];
       updatedEmergencyContacts[index] = {
         ...updatedEmergencyContacts[index],
         [subFieldName]: value,
       };
 
       const updatedFormData = {
-        ...formData,
+        ...tempFormData,
         emergencyContacts: updatedEmergencyContacts,
       };
 
-      setFormData(updatedFormData);
+      setTempFormData(updatedFormData);
     } else {
       const updatedFormData = name.includes('.')
       ? {
@@ -85,7 +95,7 @@ const PersonalInfo = () => {
           },
         }
       : { ...formData, [name]: value };
-      setFormData(updatedFormData);
+      setTempFormData(updatedFormData);
     }
   };
 
@@ -99,24 +109,26 @@ const PersonalInfo = () => {
       relationship: '',
     };
   
-    const updatedEmergencyContacts = [...formData.emergencyContacts, newEmergencyContact];
+    const updatedEmergencyContacts = [...tempFormData.emergencyContacts, newEmergencyContact];
     const updatedFormData = {
-      ...formData,
+      ...tempFormData,
       emergencyContacts: updatedEmergencyContacts,
     };
 
-    setFormData(updatedFormData);
+    setTempFormData(updatedFormData);
   };
 
   return (
   <>
 
     <EmployeeInfoForm 
-      formData={formData} 
+      formData={tempFormData} 
       handleChange={handleChange} 
       disable={true} 
       handleAddEmergencyContact={handleAddEmergencyContact} 
       page='personalInfo'
+      revertData={revertData}
+      saveData={saveData}
     />
       
       

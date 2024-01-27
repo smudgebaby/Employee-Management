@@ -7,7 +7,8 @@ import ImagePreview from './ImagePreview.jsx';
 import EmergencyContacts from './EmergencyContacts.jsx'
 import Reference from './Reference.jsx'
 
-const EmployeeInformationForm = ({formData, handleChange, disable, handleAddEmergencyContact, page}) => {
+const EmployeeInformationForm = ({
+  formData, handleChange, disable, handleAddEmergencyContact, page, revertData, saveData}) => {
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -23,7 +24,6 @@ const EmployeeInformationForm = ({formData, handleChange, disable, handleAddEmer
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState(formData?.profilePicture || '');
   const [disableMode, setDisableMode] = useState(disable);
-  const [tempFormData, setTempFormData] = useState(formData)
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -40,25 +40,24 @@ const EmployeeInformationForm = ({formData, handleChange, disable, handleAddEmer
     event.preventDefault();
     //TODO: handle backend/redux and onboardingStatus.status = 'pending'
   }
-  console.log(formData)
+  // console.log(formData)
 
   const handleEdit = () => {
     setDisableMode(false)
-    setTempFormData(formData)
   }
 
-  // const handleCancel = () => {
-  //   // setdisableMode(true)
-  //   const confirmDiscard = window.confirm('Do you want to discard changes?');
+  const handleCancel = () => {
+    const confirmDiscard = window.confirm('Do you want to discard changes?');
     
-  //   if (confirmDiscard) {
-  //     setTempFormData(null);
-  //     setDisableMode(true)
-  //   }
-  // }
+    if (confirmDiscard) {
+      setDisableMode(true)
+      revertData()
+    }
+  }
 
   const handleSave = () => {
     setDisableMode(true)
+    saveData()
     // TODO: update to backend/redux
   }
 
