@@ -1,5 +1,5 @@
 import express from 'express';
-import documentController from '../controllers/document';
+import documentController from '../controllers/document.js';
 const router = express.Router();
 
 router.post('/documents', documentController.createDocument);

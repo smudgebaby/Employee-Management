@@ -1,4 +1,4 @@
-import document from '../models/document';
+import document from '../models/document.js';
 const {Document} = document;
 // Create a new document
 const createDocument = async (req, res) => {
