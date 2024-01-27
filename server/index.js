@@ -7,6 +7,7 @@ import {config} from 'dotenv';
 import visaRouter from './routes/visastatus.js';
 // import personalInformationRouter from './routes/personalInformation.js';
 // import userRouter from './routes/user.js';
+import documentRouter from './routes/document.js'
 
 config();
 connectDB();
@@ -18,6 +19,7 @@ index.use(express.json());
 index.use('/visa', visaRouter);
 // index.use('/info', personalInformationRouter);
 // index.use('/user', userRouter);
+index.use('/document', documentRouter)
 
 index.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
