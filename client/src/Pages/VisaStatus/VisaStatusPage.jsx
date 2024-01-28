@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-import DocumentSection from '../Components/DocumentSection';
+import DocumentSection from '../../Components/DocumentSection.jsx';
 import { Container, Typography, Grid } from '@mui/material';
 
 function VisaStatusPage() {
@@ -13,10 +12,12 @@ function VisaStatusPage() {
   ]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/visa/get/65b48299e5bd33eac3cc36ee')
+    axios.get('http://localhost:3000/visa/getByUserId', {
+      withCredentials: true
+    })
     .then(response => {
-      const visaData = response.data;
-
+      const visaData = response.data[0];
+      // console.log(visaData);
       setDocuments([
         { key: 'optReceipt', title: 'OPT Receipt', uploading: false, isI983: false, ...visaData.optReceipt },
         { key: 'optEad', title: 'OPT EAD', uploading: false, isI983: false, ...visaData.optEad },

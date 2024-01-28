@@ -3,7 +3,8 @@ const {VisaStatus} = Visastatus
 
 const getVisaStatusByUserId = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.userId;
+    const userRole = req.userRole;
     const visaStatusRecords = await VisaStatus.find({ user: userId });
 
     if (!visaStatusRecords) {

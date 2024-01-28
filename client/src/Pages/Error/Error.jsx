@@ -2,7 +2,8 @@ import './Error.css'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useNavigate } from 'react-router-dom';
 
-function Error() {
+// eslint-disable-next-line react/prop-types
+function Error({children}) {
   let navigate = useNavigate();
 	const handleClick = () => {
     navigate('/')
@@ -12,7 +13,7 @@ function Error() {
     <>
       <div className="error-container">
         <ErrorOutlineIcon style={{ color: '#5b6af5', fontSize: 80 }} />
-        <p className='description'>Oops, something went wrong!</p>
+        <p className='description'>{children}</p>
         <button className='home-button' onClick={handleClick}>Go Home</button>
       </div>
     </>

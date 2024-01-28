@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import {signInUser, signUpUser, ResetPassword} from '../../Utils/backendUtil.js';
-// import {useDispatch} from 'react-redux';
-// import {setCurrentUser} from '../../Store/User/userAction.js';
-// import {useNavigate} from 'react-router-dom';
+import {signInUser, signUpUser} from '../../Utils/backendUtil.js';
+import {useNavigate} from 'react-router-dom';
 import './Layout.css';
 
 const Layout = ({ status, title, description, buttonText, isValidEmail, isValidPassword }) => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordShow, setPasswordShow] = useState(false);
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleTogglePasswordShow = () => {
     setPasswordShow(!passwordShow);
@@ -22,42 +20,29 @@ const Layout = ({ status, title, description, buttonText, isValidEmail, isValidP
     
     switch (status) {
       case 'signup':
-        handleSignUp()
+        await handleSignUp();
         break
       case 'signin':
-        handleSignIn()
-        break
-      case 'reset-password':
-        handleResetPassword()
+        await handleSignIn();
     }
   };
 
   const handleSignUp = async () => {
-    // const ok = await signUpUser(email, password);
-    // if(ok) {
-    //   navigate('/signin')
-    // } else {
-    //   alert('Error signing up');
-    // }
+    const ok = await signUpUser(username, email, password);
+    if(ok) {
+      navigate('/login');
+    } else {
+      alert('Error signing up');
+    }
   }
 
   const handleSignIn = async () => {
-    // const user = await signInUser(email, password);
-    // if(user.token) {
-    //   dispatch(setCurrentUser({currentUser: user, expiresIn: new Date().getTime() + 60 * 1000}));
-    //   navigate('/')
-    // } else {
-    //   alert('Error signing in');
-    // }
-  }
-
-  const handleResetPassword = async () => {
-    // const ok = await ResetPassword(email);
-    // if(ok) {
-    //   navigate('/confirmation')
-    // } else {
-    //   alert('Please sign up first');
-    // }
+    const user = await signInUser(email, password);
+    if(user) {
+      navigate('/')
+    } else {
+      alert('Error signing in');
+    }
   }
 
 
@@ -68,6 +53,17 @@ const Layout = ({ status, title, description, buttonText, isValidEmail, isValidP
           <h1>{title}</h1>
           {description && <p className="description">{description}</p>}
           <form onSubmit={handleSubmit}>
+            {
+              status === 'signup' && <div className={'email-container'}>
+                <label>User Name</label>
+                <input
+                  type="username"
+                  id="username"
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                ></input>
+              </div>
+            }
             <div className={isValidEmail(email) ? 'email-container' : 'invalid-container'}>
               <label>Email</label>
               <input
