@@ -1,6 +1,6 @@
 import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
 import { useState } from 'react';
-
+import DocumentUpload from '../../Components/DocumentUpload.jsx'
 const PersonalInfo = () => {
 
   const initialFormData = {
@@ -130,7 +130,10 @@ const PersonalInfo = () => {
       revertData={revertData}
       saveData={saveData}
     />
-      
+    <DocumentUpload
+      driverLicenceId = '65b58ff52815f1ebed74a80a'
+      workAuthId = '65b5932a2815f1ebed74a830'
+    />
       
   </>)
 }

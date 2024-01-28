@@ -20,5 +20,17 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="VisaStatus" />
     </ListItemButton>
+    <ListItemButton component={NavLink} to="/PersonalInfo">
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="PersonalInfo" />
+    </ListItemButton>
+    <ListItemButton component={NavLink} to="/personal-document">
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="PersonalDocument" />
+    </ListItemButton>
   </React.Fragment>
 );

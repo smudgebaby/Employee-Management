@@ -5,6 +5,8 @@ const index = express();
 import 'dotenv';
 import {config} from 'dotenv';
 import visaRouter from './routes/visastatus.js';
+
+import documentRouter from './routes/document.js'
 import personalInformationRouter from './routes/personalInformation.js';
 import userRouter from './routes/user.js';
 
@@ -21,6 +23,7 @@ index.use(express.urlencoded({ extended: false }));
 index.use(express.json());
 
 index.use('/visa', visaRouter);
+index.use('/documents', documentRouter)
 index.use('/info', personalInformationRouter);
 index.use('/user', userRouter);
 
