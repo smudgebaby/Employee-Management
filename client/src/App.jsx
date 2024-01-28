@@ -8,6 +8,7 @@ import SignUp from './Pages/SignUp/SignUp.jsx'
 import Error from './Pages/Error/Error.jsx'
 import OnboardApplication from './Pages/OnboardApplication/OnboardApplication.jsx'
 import PersonalInfo from './Pages/PersonalInfo/PersonalInfo.jsx'
+import DocumentPage from './Pages/DocumentPage';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route path='/signup' element={<SignUp />} />
             <Route path='/OnboardApplication' element={<OnboardApplication />} />
             <Route path='/PersonalInfo' element={<PersonalInfo />} />
+            <Route path='/personal-document' element={<DocumentPage />} />
             <Route path='*' element={<Error />} />
           </Routes>
         </Dashboard>

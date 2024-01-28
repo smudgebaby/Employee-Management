@@ -19,7 +19,7 @@ index.use(express.json());
 index.use('/visa', visaRouter);
 // index.use('/info', personalInformationRouter);
 // index.use('/user', userRouter);
-index.use('/document', documentRouter)
+index.use('/documents', documentRouter)
 
 index.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
