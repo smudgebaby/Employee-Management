@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 
-function generateLoginToken(user) {
+export function generateLoginToken(user) {
   const payload = {
     id: user._id,
-    username: user.username
+    role: user.role,
   }
 
   const secretKey = process.env.JWT_SECRET_KEY;
@@ -19,13 +19,42 @@ function generateLoginToken(user) {
   return token
 }
 
+export const authenticateToken = (req, res, next) => {
+  const cookie = req.headers.cookie;
+  const token = cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
 
-const generateRegistrationToken = () => {
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    req.userId = decoded.id;
+    req.userRole = decoded.role;
+    next();
+  });
+};
+
+export const checkAuthentication = async (req, res) => {
+  const cookie = req.headers.cookie;
+  const token = cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+
+  if (!token) {
+    return res.status(200).json({ isAuthenticated: false });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(200).json({ isAuthenticated: false });
+    }
+    res.status(200).json({ isAuthenticated: true, user: decoded });
+  });
+}
+
+export const generateRegistrationToken = () => {
   return crypto.randomBytes(20).toString('hex');
 };
 
 
-const sendEmail = async (recipientEmail, registrationToken) => {
+export const sendEmail = async (recipientEmail, registrationToken) => {
   const transporter = nodemailer.createTransport({
     // TODO: config email and password
     service: 'gmail',
@@ -44,6 +73,3 @@ const sendEmail = async (recipientEmail, registrationToken) => {
 
   await transporter.sendMail(mailDetail);
 };
-
-
-export default {generateLoginToken, generateRegistrationToken, sendEmail};
