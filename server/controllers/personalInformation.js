@@ -1,4 +1,6 @@
 import personalInformation from '../models/personalInformation.js';
+import userModel from '../models/user.js';
+const {User} = userModel;
 const {PersonalInformation} = personalInformation
 
 const createPersonalInformation = async (req, res) => {
