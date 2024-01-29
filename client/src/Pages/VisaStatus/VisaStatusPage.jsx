@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import FileDownload from 'js-file-download';
 import DocumentSection from '../../Components/DocumentSection.jsx';
 import { Container, Typography, Grid } from '@mui/material';
 
 function VisaStatusPage() {
+  const [docId, setDocId] = useState(null);
   const [documents, setDocuments] = useState([
     { key: 'optReceipt', title: 'OPT Receipt', status: 'Never Submit', feedback: null, uploading: false, isI983: false },
     { key: 'optEad', title: 'OPT EAD', status: 'Never Submit', feedback: null, uploading: false, isI983: false },
@@ -18,6 +20,7 @@ function VisaStatusPage() {
     .then(response => {
       const visaData = response.data[0];
       // console.log(visaData);
+      setDocId(visaData._id);
       setDocuments([
         { key: 'optReceipt', title: 'OPT Receipt', uploading: false, isI983: false, ...visaData.optReceipt },
         { key: 'optEad', title: 'OPT EAD', uploading: false, isI983: false, ...visaData.optEad },
@@ -31,53 +34,69 @@ function VisaStatusPage() {
   }, []);
 
 
-  const handleUpload = (docKey, file) => {
+  const handleUpload = (docKey, file, visaId) => {
     const formData = new FormData();
     formData.append('file', file);
 
-    // Start uploading (set uploading to true)
-    const updatedDocuments = documents.map(doc =>
-      doc.key === docKey ? { ...doc, uploading: true } : doc
-    );
-    setDocuments(updatedDocuments);
+    setDocumentUploadingState(docKey, true);
 
-    axios.post(`/api/visaStatus/upload/${docKey}`, formData)
+    axios.post('http://localhost:3000/file/upload', formData)
     .then(response => {
-      // Assuming the response includes the updated document data
-      const updatedDocData = response.data;
-
-      const updatedDocuments = documents.map(doc =>
-        doc.key === docKey ? { ...doc, ...updatedDocData, uploading: false } : doc
-      );
-      setDocuments(updatedDocuments);
+      const documentName = response.data.documentName;
+      console.log('....'+documentName);
+      return axios.post(`http://localhost:3000/visa/update/${visaId}`, {
+        [docKey]: {
+          status: "Pending",
+          feedback: "Please wait for HR to review your application.",
+          fileUrl: `/${documentName}`
+        }
+      });
+    })
+    .then(updateResponse => {
+      // Handle successful update
+      console.log('MongoDB updated successfully', updateResponse);
+      setDocumentData(docKey, updateResponse.data[docKey]);
     })
     .catch(error => {
-      console.error('Error uploading file:', error);
-      // Handle upload errors here
-      const updatedDocuments = documents.map(doc =>
-        doc.key === docKey ? { ...doc, uploading: false } : doc
-      );
-      setDocuments(updatedDocuments);
+      console.error('Error processing file upload:', error);
+      setDocumentUploadingState(docKey, false);
     });
+  };
+
+  const handleDownload = () => {
+    axios.get('http://localhost:3000/file/download/google%2B%20pre.docx', {
+      responseType: 'blob',
+    })
+    .then((response) => {
+      FileDownload(response.data, 'template.docx');
+    })
+    .catch((error) => {
+      console.error('Error downloading the file', error);
+    });
+  }
+
+  const setDocumentUploadingState = (docKey, isUploading) => {
+    setDocuments(prevDocs => prevDocs.map(doc => doc.key === docKey ? { ...doc, uploading: isUploading } : doc));
+  };
+
+  const setDocumentData = (docKey, data) => {
+    setDocuments(prevDocs => prevDocs.map(doc => doc.key === docKey ? { ...doc, ...data, uploading: false } : doc));
   };
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" gutterBottom>
-        Visa Status Management
-      </Typography>
+      <Typography variant="h4" gutterBottom>Visa Status Management</Typography>
       <Grid container spacing={6}>
         {documents.map((doc) => (
-          <Grid item xs={12} sm={12} md={12} key={doc.key}>
+          <Grid item xs={12} key={doc.key}>
             <DocumentSection
               title={doc.title}
-              onUpload={(file) => handleUpload(doc.key, file)}
+              onUpload={(file) => handleUpload(doc.key, file, docId)}
+              onDownload={handleDownload}
               status={doc.status}
               feedback={doc.feedback}
               uploading={doc.uploading}
               isI983={doc.isI983}
-              downloadEmptyTemplateUrl="/path/to/empty-i983.pdf"
-              downloadSampleTemplateUrl="/path/to/sample-i983.pdf"
             />
           </Grid>
         ))}

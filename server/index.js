@@ -9,6 +9,7 @@ import visaRouter from './routes/visastatus.js';
 import documentRouter from './routes/document.js'
 import personalInformationRouter from './routes/personalInformation.js';
 import userRouter from './routes/user.js';
+import s3Router from './middleware/s3.js';
 
 config();
 connectDB();
@@ -26,6 +27,7 @@ index.use('/visa', visaRouter);
 index.use('/documents', documentRouter)
 index.use('/info', personalInformationRouter);
 index.use('/user', userRouter);
+index.use('/file', s3Router);
 
 index.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`);
