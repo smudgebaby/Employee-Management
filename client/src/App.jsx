@@ -2,7 +2,7 @@ import './App.css'
 import Dashboard from './Components/Dashboard.jsx';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import VisaStatusPage from './Pages/VisaStatus/VisaStatusPage.jsx';
-import HomePage from './Pages/HomePage.jsx';
+import HomePage from './Pages/HomePage/HomePage.jsx';
 import Login from './Pages/Login/Login.jsx'
 import SignUp from './Pages/SignUp/SignUp.jsx'
 import Error from './Pages/Error/Error.jsx'
@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path="/visa-status" element={<PrivateRoute requiredRole='Employee'><VisaStatusPage /></PrivateRoute>} />
             <Route path="/forbidden" element={<Error>You are not allowed to access this page!</Error>} />
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<PrivateRoute requiredRole=''><HomePage /></PrivateRoute>} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
             <Route path='/OnboardApplication' element={<OnboardApplication />} />

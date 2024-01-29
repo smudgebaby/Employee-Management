@@ -37,8 +37,7 @@ export const PrivateRoute = ({ children, requiredRole }) => {
     return null;
   }
 
-  console.log(user);
-  if (user.role !== requiredRole) {
+  if (!('' === requiredRole || user.role === requiredRole)) {
     navigate('/forbidden');
     return null;
   }

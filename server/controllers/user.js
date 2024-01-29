@@ -59,6 +59,10 @@ const login = async (req, res) => {
   }
 }
 
+const logout = async (req, res) => {
+  res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
+  res.status(200).send('Logged out');
+}
 
 const generateRegistrationTokenAndSendEmail = async (req, res) => {
 
@@ -89,5 +93,6 @@ const generateRegistrationTokenAndSendEmail = async (req, res) => {
 export default {
   register,
   login,
+  logout,
   generateRegistrationTokenAndSendEmail,
 }
