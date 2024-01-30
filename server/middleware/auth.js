@@ -56,16 +56,15 @@ export const generateRegistrationToken = () => {
 
 export const sendEmail = async (recipientEmail, registrationToken) => {
   const transporter = nodemailer.createTransport({
-    // TODO: config email and password
     service: 'gmail',
     auth: {
-      // user: process.env.EMAIL_USER,
-      // process.env.EMAIL_PASSWORD,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 
   const mailDetail = {
-    // from: process.env.EMAIL_USER,
+    from: process.env.EMAIL_USER,
     to: recipientEmail,
     subject: 'Complete your Registration',
     text: `Click the following link to finish your registration: http://localhost:5173/registration?token=${registrationToken}`,

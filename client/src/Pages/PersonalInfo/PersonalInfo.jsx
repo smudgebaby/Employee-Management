@@ -10,30 +10,55 @@ const PersonalInfo = () => {
   const [formData, setFormData] = useState();
   const [tempFormData, setTempFormData] = useState();
   const [loading, setLoading] = useState(true);
-  const userId = '65b5a6d8114c6ec9a6044216';
+  const [userId, setUserId] = useState()
+
 
   useEffect(() => {
-
-    const fetchEmployeeData = async () => {
+    const fetchUserId = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/info/get/${userId}`); 
-        if (!response.ok) {
-          throw new Error('Failed to fetch employee data');
+        const userIdResponse = await fetch('http://localhost:3000/user/auth-status', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (!userIdResponse.ok) {
+          throw new Error('Error fetching userId');
         }
-        const data = await response.json();
-        setFormData(data);
-        setTempFormData(data);
-        
+  
+        const userIdData = await userIdResponse.json();
+        const userId = userIdData.user.id;
+        setUserId(userId)
+        console.log(userIdData)
+  
+        // fetch user information
+        const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (!userInformationResponse.ok) {
+          throw new Error('Error fetching employee data');
+        }
+  
+        const userInformation = await userInformationResponse.json();
+        setFormData(userInformation)
+        setTempFormData(userInformation);
+  
       } catch (error) {
-        console.error('Error fetching employee data:', error.message);
+        console.error('Error fetching employee data:', error);
       } finally {
         setLoading(false);
       }
-
     };
-
-    fetchEmployeeData();
-  }, []); 
+  
+    fetchUserId();
+  }, []);
 
 
   const revertData = () => {
