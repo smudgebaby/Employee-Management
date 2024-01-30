@@ -1,11 +1,8 @@
 import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
-import { useState } from 'react';
 import DocumentUpload from '../../../Components/DocumentUpload.jsx'
-import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
 import { useState, useEffect } from 'react';
-import DocumentUpload from '../../Components/DocumentUpload.jsx'
-import LoadSpinner from '../../Components/LoadSpinner/LoadSpinner.jsx';
-import {saveEmployeeInfo} from '../../Utils/backendUtil.js';
+import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
+import {saveEmployeeInfo} from '../../../Utils/backendUtil.js';
 
 
 const PersonalInfo = () => {

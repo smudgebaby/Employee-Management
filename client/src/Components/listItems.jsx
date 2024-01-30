@@ -35,7 +35,6 @@ export const mainListItems = (
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Personal Information" />
       <ListItemText primary="Personal Info" />
     </ListItemButton>
     <ListItemButton component={NavLink} to="/personal-document">

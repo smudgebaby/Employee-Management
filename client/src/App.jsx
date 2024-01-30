@@ -9,9 +9,6 @@ import Error from './Pages/Error/Error.jsx'
 import OnboardApplication from './Pages/EmployeePages/OnboardApplication/OnboardApplication.jsx'
 import PersonalInfo from './Pages/EmployeePages/PersonalInfo/PersonalInfo.jsx'
 import DocumentPage from './Pages/EmployeePages/DocumentPage.jsx';
-import OnboardApplication from './Pages/OnboardApplication/OnboardApplication.jsx'
-import PersonalInfo from './Pages/PersonalInfo/PersonalInfo.jsx'
-import DocumentPage from './Pages/DocumentPage';
 import EmployeeProfilesPage from './Pages/EmployeeProfilesPage';
 
 import {PrivateRoute} from './Components/PrivateRoute';
