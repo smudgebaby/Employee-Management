@@ -18,19 +18,25 @@ export const mainListItems = (
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="VisaStatus" />
+      <ListItemText primary="Visa Status" />
     </ListItemButton>
-    <ListItemButton component={NavLink} to="/PersonalInfo">
+    <ListItemButton component={NavLink} to="/onboard-application">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="PersonalInfo" />
+      <ListItemText primary="Onboard Application" />
+    </ListItemButton>
+    <ListItemButton component={NavLink} to="/personal-info">
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Personal Information" />
     </ListItemButton>
     <ListItemButton component={NavLink} to="/personal-document">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="PersonalDocument" />
+      <ListItemText primary="Personal Document" />
     </ListItemButton>
   </React.Fragment>
 );

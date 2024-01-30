@@ -8,7 +8,7 @@ import EmergencyContacts from './EmergencyContacts.jsx'
 import Reference from './Reference.jsx'
 
 const EmployeeInformationForm = ({
-  formData, handleChange, disable, handleAddEmergencyContact, page, revertData, saveData}) => {
+  formData, handleChange, disable, handleAddEmergencyContact, page, revertData, saveData, submitForm, submitButton}) => {
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -38,9 +38,8 @@ const EmployeeInformationForm = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    //TODO: handle backend/redux and onboardingStatus.status = 'pending'
+    submitForm();
   }
-  // console.log(formData)
 
   const handleEdit = () => {
     setDisableMode(false)
@@ -58,7 +57,6 @@ const EmployeeInformationForm = ({
   const handleSave = () => {
     setDisableMode(true)
     saveData()
-    // TODO: update to backend/redux
   }
 
   return (
@@ -145,7 +143,7 @@ const EmployeeInformationForm = ({
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth type="date" label="Date of Birth" variant="outlined" name="dateOfBirth" 
-              value={formData.dateOfBirth} onChange={handleChange} required disabled={disableMode} />
+              value={new Date(formData.dateOfBirth).toLocaleDateString("en-CA")} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="SSN" variant="outlined" name="ssn" 
@@ -223,7 +221,7 @@ const EmployeeInformationForm = ({
             }
           </Grid>
 
-          {page==='onboarding' && 
+          {page==='onboarding' && submitButton &&
           <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
             Submit
           </Button>}

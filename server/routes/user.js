@@ -1,6 +1,7 @@
 import express from 'express';
 import {checkAuthentication} from '../middleware/auth.js';
 import userController from '../controllers/user.js';
+
 const {register, login, generateRegistrationTokenAndSendEmail} = userController
 
 const router = express.Router();

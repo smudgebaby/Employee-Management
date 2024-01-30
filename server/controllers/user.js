@@ -65,14 +65,11 @@ const generateRegistrationTokenAndSendEmail = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email || !validateEmail(email)) {
+    if (!email ) {
       return res.status(400).json({ message: 'Invalid email address' });
     }
 
     const registrationToken = generateRegistrationToken();
-
-    // TODO: Save the registration token in the database
-    // might need a token Schema
 
     await sendEmail(email, registrationToken);
 
