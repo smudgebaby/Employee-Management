@@ -3,6 +3,8 @@ import {checkAuthentication} from '../middleware/auth.js';
 import userController from '../controllers/user.js';
 const {updateUserById, getUserById, logout, register, login, generateRegistrationTokenAndSendEmail} = userController
 
+const {register, login, generateRegistrationTokenAndSendEmail} = userController
+
 const router = express.Router();
 
 router.post('/register', register);

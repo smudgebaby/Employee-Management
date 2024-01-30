@@ -9,6 +9,11 @@ import Error from './Pages/Error/Error.jsx'
 import OnboardApplication from './Pages/EmployeePages/OnboardApplication/OnboardApplication.jsx'
 import PersonalInfo from './Pages/EmployeePages/PersonalInfo/PersonalInfo.jsx'
 import DocumentPage from './Pages/EmployeePages/DocumentPage.jsx';
+import OnboardApplication from './Pages/OnboardApplication/OnboardApplication.jsx'
+import PersonalInfo from './Pages/PersonalInfo/PersonalInfo.jsx'
+import DocumentPage from './Pages/DocumentPage';
+import EmployeeProfilesPage from './Pages/EmployeeProfilesPage';
+
 import {PrivateRoute} from './Components/PrivateRoute';
 import EmployeeVisaStatusPage
   from './Pages/HRPages/EmpVisaStatus/EmployeeVisaStatusPage.jsx';
@@ -25,9 +30,11 @@ function App() {
             <Route path="/" element={<PrivateRoute requiredRole=''><HomePage /></PrivateRoute>} />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
-            <Route path='/OnboardApplication' element={<OnboardApplication />} />
-            <Route path='/PersonalInfo' element={<PersonalInfo />} />
+            <Route path='/onboard-application' element={<PrivateRoute requiredRole='Employee'><OnboardApplication /></PrivateRoute>} />
+            <Route path='/personal-info' element={<PrivateRoute requiredRole='Employee'><PersonalInfo /></PrivateRoute>}/>
             <Route path='/personal-document' element={<DocumentPage />} />
+
+            <Route path='/employee-profiles' element={<PrivateRoute requiredRole='HR'><EmployeeProfilesPage /></PrivateRoute>} />
             <Route path='*' element={<Error>Oops, something went wrong!</Error>} />
           </Routes>
         </Dashboard>

@@ -1,60 +1,104 @@
 import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import { useState } from 'react';
+import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
+import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
+import LoadSpinner from '../../Components/LoadSpinner/LoadSpinner.jsx';
+import {saveEmployeeInfo, createEmployeeInfo} from '../../Utils/backendUtil.js';
 
 const OnboardApplication = () => {
 
-  const [formData, setFormData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
+  const initialData = {
+    firstName: '',
+    lastName: '',
     middleName: '',
-    preferredName: 'Johnny',
+    preferredName: '',
     profilePicture: '',
     address: {
-      building: '',
-      street: '123 Main St',
-      city: 'Boston',
-      state: 'MA',
-      zip: '02134',
-    },
-    cellPhoneNumber: '555-555-5555',
-    workPhoneNumber: '555-555-5556',
+      building: '', street: '', city: '', state: '', zip: '', },
+    cellPhoneNumber: '',
+    workPhoneNumber: '',
     email: 'john.doe@example.com',
-    ssn: '123-45-6789',
-    dateOfBirth: '1990-01-01',
-    gender: 'Male',
-    citizenship: 'Other',
-    workAuthorizationType: 'H1-B',
-    startWorkAuthorizationDate: '2023-01-01',
-    endWorkAuthorizationDate: '2025-01-01',
+    ssn: '',
+    dateOfBirth: '',
+    gender: '',
+    citizenship: '',
+    workAuthorizationType: '',
+    startWorkAuthorizationDate: '',
+    endWorkAuthorizationDate: '',
     reference: {
-      firstName: 'Referrer',
-      lastName: 'Reference',
+      firstName: '',
+      lastName: '',
       middleName: '',
-      phone: '555-555-5557',
-      email: 'referrer@example.com',
-      relationship: 'Friend',
+      phone: '',
+      email: '',
+      relationship: '',
     },
     emergencyContacts: [
       {
-        firstName: 'Emergency',
-        lastName: 'Contact',
+        firstName: '',
+        lastName: '',
         middleName: '',
-        phone: '555-555-5558',
-        email: 'emergency.contact@example.com',
-        relationship: 'Family',
-      },
-      {
-        firstName: 'Emergency',
-        lastName: 'Contact',
-        middleName: '',
-        phone: '555-555-5558',
-        email: 'emergency.contact@example.com',
-        relationship: 'Family',
+        phone: '',
+        email: '',
+        relationship: '',
       },
     ],
-    onboardingStatus: {status: 'rejected', feedback: 'Wrong zip code'},
-  });
+  };
+
+  const [formData, setFormData] = useState();
+  const [loading, setLoading] = useState(true);
+  // const userId = '65b5a6d8114c6ec9a6044216';
+  const [userId, setUserId] = useState()
+
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userIdResponse = await fetch('http://localhost:3000/user/auth-status', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!userIdResponse.ok) {
+          throw new Error('Error fetching userId');
+        }
+
+        const userIdData = await userIdResponse.json();
+        const userId = userIdData.user.id;
+        setUserId(userId)
+        console.log(userIdData)
+
+        // fetch user information
+        const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!userInformationResponse.ok) {
+          throw new Error('Error fetching employee data');
+        }
+
+        const userInformation = await userInformationResponse.json();
+        setFormData(userInformation)
+
+        console.log(userInformation);
+      } catch (error) {
+        console.error('Error fetching employee data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
 
 
   const handleChange = (event) => {
@@ -88,37 +132,49 @@ const OnboardApplication = () => {
     }
   };
 
+  // update to db
+  const submitForm = () => {
+    saveEmployeeInfo(userId, formData)
+    // onboarding.status = 'pending'
+  }
+
 
   return (
   <>
-    {formData.onboardingStatus.status === 'rejected' && 
-      <div>
-        <h4>Rejected, please see feedback and resubmit</h4>
-        <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
-      }
+    {loading? <LoadSpinner /> : (
+      <>
+        {formData.onboardingStatus.status === 'rejected' &&
+          <div>
+            <h4>Rejected, please see feedback and resubmit</h4>
+            <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
+          }
 
-    {formData.onboardingStatus.status !== 'pending' && formData.onboardingStatus.status !== 'approved' && 
-    <EmployeeInfoForm 
-      formData={formData} 
-      handleChange={handleChange} 
-      disable={false} 
-      page='onboarding'
-    />}
+        {(formData.onboardingStatus.status === 'never submitted' || formData.onboardingStatus.status === 'rejected') &&
+        <EmployeeInfoForm
+          formData={formData}
+          handleChange={handleChange}
+          disable={false}
+          page='onboarding'
+          submitForm={submitForm}
+          submitButton={true}
+        />}
 
-    {formData.onboardingStatus.status === 'pending' && 
-    <EmployeeInfoForm 
-      formData={formData} 
-      handleChange={handleChange} 
-      disable={true} 
-      page='onboarding'
-    />}
+        {formData.onboardingStatus.status === 'pending' &&
+        <EmployeeInfoForm
+          formData={formData}
+          handleChange={handleChange}
+          disable={true}
+          page='onboarding'
+        />}
 
-    {formData.onboardingStatus.status === 'approved' && 
-      <div>
-        <p>Congratulation! your application has been approved, please go to </p>
-        <Link to='/' >HOME </Link>
-      </div>}
-      
+        {formData.onboardingStatus.status === 'approved' &&
+          <div>
+            <p>Congratulation! your application has been approved, please go to </p>
+            <Link to='/' >HOME </Link>
+          </div>
+        }
+      </>
+    )}
   </>)
 }
 

@@ -41,3 +41,45 @@ export const signInUser = async (email, password) => {
     console.error('Error signing in:', error);
   }
 };
+
+export const createEmployeeInfo = async (id, formData) => {
+  try {
+    const response = await fetch(`http://localhost:3000/info/create/${id}` , {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update data');
+    }
+
+    return response.ok
+
+  } catch (error) {
+    console.error('Error updating data:', error.message);
+  }
+}
+
+export const saveEmployeeInfo = async (id, formData) => {
+  try {
+    const response = await fetch(`http://localhost:3000/info/update/${id}` , {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save data');
+    }
+
+    return response.ok
+
+  } catch (error) {
+    console.error('Error saving data:', error.message);
+  }
+}

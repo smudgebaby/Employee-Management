@@ -25,10 +25,17 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Visa Status" />
     </ListItemButton>
-    <ListItemButton component={NavLink} to="/PersonalInfo">
+    <ListItemButton component={NavLink} to="/onboard-application">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
+      <ListItemText primary="Onboard Application" />
+    </ListItemButton>
+    <ListItemButton component={NavLink} to="/personal-info">
+      <ListItemIcon>
+        <ShoppingCartIcon />
+      </ListItemIcon>
+      <ListItemText primary="Personal Information" />
       <ListItemText primary="Personal Info" />
     </ListItemButton>
     <ListItemButton component={NavLink} to="/personal-document">
