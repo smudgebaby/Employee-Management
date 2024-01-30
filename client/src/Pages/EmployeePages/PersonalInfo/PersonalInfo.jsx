@@ -1,6 +1,6 @@
-import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
+import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import { useState } from 'react';
-import DocumentUpload from '../../Components/DocumentUpload.jsx'
+import DocumentUpload from '../../../Components/DocumentUpload.jsx'
 const PersonalInfo = () => {
 
   const initialFormData = {

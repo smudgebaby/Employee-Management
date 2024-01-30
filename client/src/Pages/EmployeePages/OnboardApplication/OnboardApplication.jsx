@@ -1,4 +1,4 @@
-import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
+import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
 

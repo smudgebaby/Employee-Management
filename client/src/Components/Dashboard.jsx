@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems } from './listItems.jsx';
+import {mainListItems, secondaryListItems} from './listItems.jsx';
 import {Badge} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import {useNavigate} from 'react-router-dom';
@@ -164,6 +164,8 @@ export default function Dashboard({children}) {
           <Divider />
           <List component="nav">
             {mainListItems}
+            <Divider sx={{ my: 1 }} />
+            {secondaryListItems}
           </List>
         </Drawer>
         <Box

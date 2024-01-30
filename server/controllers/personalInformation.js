@@ -56,7 +56,7 @@ const getPersonalInformation = async (req, res) => {
     const employeeInformation = await PersonalInformation.findOne({ id });
 
     if(!employeeInformation) {
-      return res.status(404).json({ message: 'Employee personal information not found' })
+      return res.status(404).json({ message: 'EmployeePages personal information not found' })
     }
 
     res.status(200).json(employeeInformation);

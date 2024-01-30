@@ -1,4 +1,4 @@
-import PersonalDocument from "../Components/PersonalDocument";
+import PersonalDocument from "../../Components/PersonalDocument.jsx";
 import { Container, Typography, Grid } from '@mui/material';
 const DocumentPage = () => {
     return(<>

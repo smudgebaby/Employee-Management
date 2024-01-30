@@ -26,7 +26,6 @@ const register = async (req, res) => {
   }
 }
 
-
 const login = async (req, res) => {
 
   try {
@@ -34,11 +33,11 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ email });
     if(!user) {
-      return res.status(400).json({ message: 'Invalid email'})
+      return res.status(400).json({ code: 400, message: 'Invalid email'})
     }
 
     if(user.password !== password) {
-      return res.status(400).json({ message: 'Password not match'})
+      return res.status(400).json({ code: 400, message: 'Password not match'})
     }
 
     const token = generateLoginToken(user);
@@ -51,11 +50,11 @@ const login = async (req, res) => {
     });
 
     const role = user.role === 'employee' ? 1 : 2;
-    res.status(200).json({ message: 'Sign in successful', role })
+    res.status(200).json({ code: 200, message: 'Sign in successful', role })
 
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ message: 'Server Error'});
+    res.status(500).json({ code: 500, message: 'Server Error'});
   }
 }
 
@@ -88,11 +87,48 @@ const generateRegistrationTokenAndSendEmail = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    .populate('visaStatus')
+    .populate('documents')
+    .populate('personalInformation');
 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const updateUserById = async (req, res) => {
+  try {
+    const { personalInformationId, documentIds, visaStatusId } = req.body;
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (personalInformationId) user.personalInformation = personalInformationId;
+    if (documentIds) user.documents = documentIds;
+    if (visaStatusId) user.visaStatus = visaStatusId;
+
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 export default {
   register,
   login,
   logout,
   generateRegistrationTokenAndSendEmail,
+  getUserById,
+  updateUserById
 }

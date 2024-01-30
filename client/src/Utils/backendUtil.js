@@ -32,6 +32,9 @@ export const signInUser = async (email, password) => {
     
     const data = await response.json();
 
+    if (data.code !== 200)
+      return null;
+
     return data;
     
   } catch (error) {
