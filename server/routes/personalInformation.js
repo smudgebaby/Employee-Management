@@ -3,15 +3,18 @@ import personalInformationController from '../controllers/personalInformation.js
 const {
   createPersonalInformation, 
   updatePersonalInformation, 
-  getPersonalInformation
+  getPersonalInformation,
+  getAllPersonalInformation
 } = personalInformationController
 
 const router = express.Router();
 
-router.post('/:id', createPersonalInformation);
+router.post('/create/:id', createPersonalInformation);
 
-router.put('/:id', updatePersonalInformation);
+router.put('/update/:id', updatePersonalInformation);
 
-router.get('/:id', getPersonalInformation);
+router.get('/get/:id', getPersonalInformation);
+
+router.get('/getAll', getAllPersonalInformation);
 
 export default router;

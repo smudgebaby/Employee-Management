@@ -1,70 +1,49 @@
 import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DocumentUpload from '../../Components/DocumentUpload.jsx'
+import LoadSpinner from '../../Components/LoadSpinner/LoadSpinner.jsx';
+import {saveEmployeeInfo} from '../../Utils/backendUtil.js';
+
+
 const PersonalInfo = () => {
 
-  const initialFormData = {
-    firstName: 'John',
-    lastName: 'Doe',
-    middleName: '',
-    preferredName: 'Johnny',
-    profilePicture: '',
-    address: {
-      building: '',
-      street: '123 Main St',
-      city: 'Boston',
-      state: 'MA',
-      zip: '02134',
-    },
-    cellPhoneNumber: '555-555-5555',
-    workPhoneNumber: '555-555-5556',
-    email: 'john.doe@example.com',
-    ssn: '123-45-6789',
-    dateOfBirth: '1990-01-01',
-    gender: 'Male',
-    citizenship: 'Other',
-    workAuthorizationType: 'H1-B',
-    startWorkAuthorizationDate: '2023-01-01',
-    endWorkAuthorizationDate: '2025-01-01',
-    reference: {
-      firstName: 'Referrer',
-      lastName: 'Reference',
-      middleName: '',
-      phone: '555-555-5557',
-      email: 'referrer@example.com',
-      relationship: 'Friend',
-    },
-    emergencyContacts: [
-      {
-        firstName: 'Emergency',
-        lastName: 'Contact',
-        middleName: '',
-        phone: '555-555-5558',
-        email: 'emergency.contact@example.com',
-        relationship: 'Family',
-      },
-      {
-        firstName: 'Emergency',
-        lastName: 'Contact',
-        middleName: '',
-        phone: '555-555-5558',
-        email: 'emergency.contact@example.com',
-        relationship: 'Family',
-      },
-    ],
-    onboardingStatus: {status: 'rejected', feedback: 'Wrong zip code'},
-  };
+  const [formData, setFormData] = useState();
+  const [tempFormData, setTempFormData] = useState();
+  const [loading, setLoading] = useState(true);
+  const userId = '65b5a6d8114c6ec9a6044216';
 
+  useEffect(() => {
 
-  const [formData, setFormData] = useState(initialFormData);
-  const [tempFormData, setTempFormData] = useState(initialFormData);
+    const fetchEmployeeData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/info/get/${userId}`); 
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee data');
+        }
+        const data = await response.json();
+        setFormData(data);
+        setTempFormData(data);
+        
+      } catch (error) {
+        console.error('Error fetching employee data:', error.message);
+      } finally {
+        setLoading(false);
+      }
+
+    };
+
+    fetchEmployeeData();
+  }, []); 
+
 
   const revertData = () => {
-    setTempFormData(initialFormData)
+    setTempFormData(formData)
   }
 
+  // update to db
   const saveData = () => {
     setFormData(tempFormData)
+    saveEmployeeInfo(userId, tempFormData)
   }
 
 
@@ -121,15 +100,19 @@ const PersonalInfo = () => {
   return (
   <>
 
-    <EmployeeInfoForm 
-      formData={tempFormData} 
-      handleChange={handleChange} 
-      disable={true} 
-      handleAddEmergencyContact={handleAddEmergencyContact} 
-      page='personalInfo'
-      revertData={revertData}
-      saveData={saveData}
-    />
+    {loading? <LoadSpinner /> : (
+      <EmployeeInfoForm 
+        formData={tempFormData} 
+        handleChange={handleChange} 
+        disable={true} 
+        handleAddEmergencyContact={handleAddEmergencyContact} 
+        page='personalInfo'
+        revertData={revertData}
+        saveData={saveData}
+      /> 
+    )}
+
+    
     <DocumentUpload
       driverLicenceId = '65b58ff52815f1ebed74a80a'
       workAuthId = '65b5932a2815f1ebed74a830'

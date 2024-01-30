@@ -68,9 +68,26 @@ const getPersonalInformation = async (req, res) => {
 }
 
 
+const getAllPersonalInformation = async (req, res) => {
+  try {
+    const allPersonalInformation = await PersonalInformation.find();
+
+    if (!allPersonalInformation || allPersonalInformation.length === 0) {
+      return res.status(404).json({ message: 'No personal information records found' });
+    }
+
+    res.status(200).json({ data: allPersonalInformation });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: 'get Server Error' });
+  }
+};
+
+
 
 export default {
   createPersonalInformation,
   updatePersonalInformation,
   getPersonalInformation,
+  getAllPersonalInformation,
 }
