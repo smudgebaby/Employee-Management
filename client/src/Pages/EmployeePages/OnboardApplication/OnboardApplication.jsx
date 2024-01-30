@@ -1,8 +1,8 @@
-import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
+import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
-import LoadSpinner from '../../Components/LoadSpinner/LoadSpinner.jsx';
-import {saveEmployeeInfo, createEmployeeInfo} from '../../Utils/backendUtil.js';
+import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
+import {saveEmployeeInfo, createEmployeeInfo} from '../../../Utils/backendUtil.js';
 
 const OnboardApplication = () => {
 
@@ -60,16 +60,16 @@ const OnboardApplication = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!userIdResponse.ok) {
           throw new Error('Error fetching userId');
         }
-  
+
         const userIdData = await userIdResponse.json();
         const userId = userIdData.user.id;
         setUserId(userId)
         console.log(userIdData)
-  
+
         // fetch user information
         const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
           method: 'GET',
@@ -78,14 +78,14 @@ const OnboardApplication = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!userInformationResponse.ok) {
           throw new Error('Error fetching employee data');
         }
-  
+
         const userInformation = await userInformationResponse.json();
         setFormData(userInformation)
-  
+
         console.log(userInformation);
       } catch (error) {
         console.error('Error fetching employee data:', error);
@@ -93,7 +93,7 @@ const OnboardApplication = () => {
         setLoading(false);
       }
     };
-  
+
     fetchUserId();
   }, []);
 
@@ -118,14 +118,14 @@ const OnboardApplication = () => {
       setFormData(updatedFormData);
     } else {
       const updatedFormData = name.includes('.')
-      ? {
+        ? {
           ...formData,
           [name.split('.')[0]]: {
             ...formData[name.split('.')[0]],
             [name.split('.')[1]]: value,
           },
         }
-      : { ...formData, [name]: value };
+        : { ...formData, [name]: value };
       setFormData(updatedFormData);
     }
   };
@@ -138,42 +138,42 @@ const OnboardApplication = () => {
 
 
   return (
-  <>
-    {loading? <LoadSpinner /> : (
-      <>
-        {formData.onboardingStatus.status === 'rejected' && 
-          <div>
-            <h4>Rejected, please see feedback and resubmit</h4>
-            <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
+    <>
+      {loading? <LoadSpinner /> : (
+        <>
+          {formData.onboardingStatus.status === 'rejected' &&
+            <div>
+              <h4>Rejected, please see feedback and resubmit</h4>
+              <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
           }
 
-        {(formData.onboardingStatus.status === 'never submitted' || formData.onboardingStatus.status === 'rejected') && 
-        <EmployeeInfoForm 
-          formData={formData} 
-          handleChange={handleChange} 
-          disable={false} 
-          page='onboarding'
-          submitForm={submitForm}
-          submitButton={true}
-        />}
+          {(formData.onboardingStatus.status === 'never submitted' || formData.onboardingStatus.status === 'rejected') &&
+            <EmployeeInfoForm
+              formData={formData}
+              handleChange={handleChange}
+              disable={false}
+              page='onboarding'
+              submitForm={submitForm}
+              submitButton={true}
+            />}
 
-        {formData.onboardingStatus.status === 'pending' && 
-        <EmployeeInfoForm 
-          formData={formData} 
-          handleChange={handleChange} 
-          disable={true} 
-          page='onboarding'
-        />}
+          {formData.onboardingStatus.status === 'pending' &&
+            <EmployeeInfoForm
+              formData={formData}
+              handleChange={handleChange}
+              disable={true}
+              page='onboarding'
+            />}
 
-        {formData.onboardingStatus.status === 'approved' && 
-          <div>
-            <p>Congratulation! your application has been approved, please go to </p>
-            <Link to='/' >HOME </Link>
-          </div>
-        }
-      </>
-    )}
-  </>)
+          {formData.onboardingStatus.status === 'approved' &&
+            <div>
+              <p>Congratulation! your application has been approved, please go to </p>
+              <Link to='/' >HOME </Link>
+            </div>
+          }
+        </>
+      )}
+    </>)
 }
 
 export default OnboardApplication;

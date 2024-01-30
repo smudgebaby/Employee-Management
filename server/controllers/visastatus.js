@@ -49,4 +49,5 @@ const getVisaStatus = async (req, res) => {
   }
 };
 
+
 export default { getVisaStatusByUserId, createVisaStatus, updateVisaStatus, getVisaStatus };

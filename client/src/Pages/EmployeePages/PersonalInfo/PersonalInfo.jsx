@@ -1,8 +1,8 @@
-import EmployeeInfoForm from '../../Components/EmployeeInfoForm.jsx'
+import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
+import DocumentUpload from '../../../Components/DocumentUpload.jsx'
 import { useState, useEffect } from 'react';
-import DocumentUpload from '../../Components/DocumentUpload.jsx'
-import LoadSpinner from '../../Components/LoadSpinner/LoadSpinner.jsx';
-import {saveEmployeeInfo} from '../../Utils/backendUtil.js';
+import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
+import {saveEmployeeInfo} from '../../../Utils/backendUtil.js';
 
 
 const PersonalInfo = () => {
@@ -23,16 +23,16 @@ const PersonalInfo = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!userIdResponse.ok) {
           throw new Error('Error fetching userId');
         }
-  
+
         const userIdData = await userIdResponse.json();
         const userId = userIdData.user.id;
         setUserId(userId)
         console.log(userIdData)
-  
+
         // fetch user information
         const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
           method: 'GET',
@@ -41,22 +41,22 @@ const PersonalInfo = () => {
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (!userInformationResponse.ok) {
           throw new Error('Error fetching employee data');
         }
-  
+
         const userInformation = await userInformationResponse.json();
         setFormData(userInformation)
         setTempFormData(userInformation);
-  
+
       } catch (error) {
         console.error('Error fetching employee data:', error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchUserId();
   }, []);
 
@@ -126,18 +126,18 @@ const PersonalInfo = () => {
   <>
 
     {loading? <LoadSpinner /> : (
-      <EmployeeInfoForm 
-        formData={tempFormData} 
-        handleChange={handleChange} 
-        disable={true} 
-        handleAddEmergencyContact={handleAddEmergencyContact} 
+      <EmployeeInfoForm
+        formData={tempFormData}
+        handleChange={handleChange}
+        disable={true}
+        handleAddEmergencyContact={handleAddEmergencyContact}
         page='personalInfo'
         revertData={revertData}
         saveData={saveData}
-      /> 
+      />
     )}
 
-    
+
     <DocumentUpload
       driverLicenceId = '65b58ff52815f1ebed74a80a'
       workAuthId = '65b5932a2815f1ebed74a830'

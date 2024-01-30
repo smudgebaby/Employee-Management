@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -14,7 +13,12 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems } from './listItems.jsx';
+import {mainListItems, secondaryListItems} from './listItems.jsx';
+import {Badge} from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import {useNavigate} from 'react-router-dom';
+import {useState} from 'react';
+import axios from 'axios';
 
 
 function Copyright(props) {
@@ -80,9 +84,27 @@ const defaultTheme = createTheme();
 
 // eslint-disable-next-line react/prop-types
 export default function Dashboard({children}) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+
+  const navigate = useNavigate();
+
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/user/auth-status', {
+        withCredentials: true
+      });
+      if (response.data.isAuthenticated) {
+        navigate('/');
+      } else {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Authentication check failed', error);
+    }
   };
 
   return (
@@ -116,6 +138,14 @@ export default function Dashboard({children}) {
             >
               Dashboard
             </Typography>
+            <IconButton
+              color="inherit"
+              onClick={handleLogin}
+            >
+              <Badge color="secondary">
+                <PersonIcon/>
+              </Badge>
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -134,6 +164,8 @@ export default function Dashboard({children}) {
           <Divider />
           <List component="nav">
             {mainListItems}
+            <Divider sx={{ my: 1 }} />
+            {secondaryListItems}
           </List>
         </Drawer>
         <Box

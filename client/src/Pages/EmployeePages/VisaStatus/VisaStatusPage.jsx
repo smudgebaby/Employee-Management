@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import FileDownload from 'js-file-download';
-import DocumentSection from '../../Components/DocumentSection.jsx';
+import DocumentSection from '../../../Components/DocumentSection.jsx';
 import { Container, Typography, Grid } from '@mui/material';
 
 function VisaStatusPage() {
