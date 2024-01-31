@@ -2,7 +2,7 @@ import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
-import {saveEmployeeInfo, createEmployeeInfo} from '../../../Utils/backendUtil.js';
+import {saveEmployeeInfo, createEmployeeInfo, updateUser} from '../../../Utils/backendUtil.js';
 
 const OnboardApplication = () => {
 
@@ -16,7 +16,7 @@ const OnboardApplication = () => {
       building: '', street: '', city: '', state: '', zip: '', },
     cellPhoneNumber: '',
     workPhoneNumber: '',
-    email: 'john.doe@example.com',
+    email: '',
     ssn: '',
     dateOfBirth: '',
     gender: '',
@@ -46,12 +46,12 @@ const OnboardApplication = () => {
 
   const [formData, setFormData] = useState();
   const [loading, setLoading] = useState(true);
-  // const userId = '65b5a6d8114c6ec9a6044216';
   const [userId, setUserId] = useState()
+  const [onboardStatus, setOnboardStatus] = useState()
 
 
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchUserInfo = async () => {
       try {
         const userIdResponse = await fetch('http://localhost:3000/user/auth-status', {
           method: 'GET',
@@ -69,9 +69,9 @@ const OnboardApplication = () => {
         const userId = userIdData.user.id;
         setUserId(userId)
         console.log(userIdData)
-
+        
         // fetch user information
-        const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
+        const userResponse = await fetch(`http://localhost:3000/user/getById/${userId}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -79,14 +79,36 @@ const OnboardApplication = () => {
           },
         });
 
-        if (!userInformationResponse.ok) {
+        if (!userResponse.ok) {
           throw new Error('Error fetching employee data');
         }
 
-        const userInformation = await userInformationResponse.json();
-        setFormData(userInformation)
+        const userInformation = await userResponse.json();
+        // console.log(userInformation)
+        setOnboardStatus(userInformation.onboardingStatus)
+        if(!userInformation.personalInformation) {
+          setFormData({...initialData, email: userInformation.email})
+        }
+        else {
+        // fetch user information
+          const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
 
-        console.log(userInformation);
+          if (!userInformationResponse.ok) {
+            throw new Error('Error fetching employee data');
+          }
+
+          const userInformation = await userInformationResponse.json();
+          setFormData(userInformation)
+
+          console.log(userInformation);
+        }
+
       } catch (error) {
         console.error('Error fetching employee data:', error);
       } finally {
@@ -94,9 +116,8 @@ const OnboardApplication = () => {
       }
     };
 
-    fetchUserId();
+    fetchUserInfo();
   }, []);
-
 
 
   const handleChange = (event) => {
@@ -133,7 +154,29 @@ const OnboardApplication = () => {
   // update to db
   const submitForm = () => {
     saveEmployeeInfo(userId, formData)
-    // onboarding.status = 'pending'
+    const updatedUser = updateUser(userId, {onboardingStatus: {'status': 'Pending'}})
+      if(updatedUser) {
+        alert('Submit information successful');
+        setOnboardStatus('Pending');
+      } else {
+        alert('Error update user');
+      }
+  }
+
+  const createForm = async () => {
+    console.log(formData)
+    const infoId = await createEmployeeInfo(userId, formData);
+    if(infoId) {
+      const updatedUser = updateUser(userId, {personalInformationId: infoId, onboardingStatus: {'status': 'Pending'}})
+      if(updatedUser) {
+        alert('Submit information successful');
+        setOnboardStatus('Pending');
+      } else {
+        alert('Error update user');
+      }
+    } else {
+      alert('Error submit form');
+    }
   }
 
 
@@ -141,23 +184,32 @@ const OnboardApplication = () => {
     <>
       {loading? <LoadSpinner /> : (
         <>
-          {formData.onboardingStatus.status === 'rejected' &&
+          {onboardStatus.status === 'Rejected' &&
             <div>
               <h4>Rejected, please see feedback and resubmit</h4>
-              <h4>HR Feedback: {formData.onboardingStatus.feedback}</h4></div>
+              <h4>HR Feedback: {onboardStatus.feedback}</h4>
+              <EmployeeInfoForm
+                formData={formData}
+                handleChange={handleChange}
+                disable={false}
+                page='onboarding'
+                submitForm={submitForm}
+                submitButton={true}
+              />
+            </div>
           }
 
-          {(formData.onboardingStatus.status === 'never submitted' || formData.onboardingStatus.status === 'rejected') &&
+          {(onboardStatus.status === 'Never Submit') &&
             <EmployeeInfoForm
               formData={formData}
               handleChange={handleChange}
               disable={false}
               page='onboarding'
-              submitForm={submitForm}
+              submitForm={createForm}
               submitButton={true}
             />}
 
-          {formData.onboardingStatus.status === 'pending' &&
+          {onboardStatus.status === 'Pending' &&
             <EmployeeInfoForm
               formData={formData}
               handleChange={handleChange}
@@ -165,7 +217,7 @@ const OnboardApplication = () => {
               page='onboarding'
             />}
 
-          {formData.onboardingStatus.status === 'approved' &&
+          {onboardStatus.status === 'Approved' &&
             <div>
               <p>Congratulation! your application has been approved, please go to </p>
               <Link to='/' >HOME </Link>

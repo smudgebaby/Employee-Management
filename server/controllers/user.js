@@ -103,7 +103,7 @@ const getUserById = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   try {
-    const { personalInformationId, documentIds, visaStatusId } = req.body;
+    const { personalInformationId, documentIds, visaStatusId, onboardingStatus } = req.body;
     const user = await User.findById(req.params.id);
 
     if (!user) {
@@ -113,6 +113,10 @@ const updateUserById = async (req, res) => {
     if (personalInformationId) user.personalInformation = personalInformationId;
     if (documentIds) user.documents = documentIds;
     if (visaStatusId) user.visaStatus = visaStatusId;
+    if (onboardingStatus) {
+      user.onboardingStatus.status = onboardingStatus.status || user.onboardingStatus.status;
+      user.onboardingStatus.feedback = onboardingStatus.feedback || user.onboardingStatus.feedback;
+    }
 
     await user.save();
     res.status(200).json(user);

@@ -25,7 +25,7 @@ const personalInformationSchema = new mongoose.Schema({
   gender: { 
     type: String, 
     enum: ['Male', 'Female', 'Other'],
-    required: false
+    required: true
   },
   address: {
     building: { 
@@ -87,11 +87,6 @@ const personalInformationSchema = new mongoose.Schema({
     email: String,
     relationship: String
   },
-  onboardingStatus: {
-    status: {type: String, default: 'never submitted'},
-    feedback: String
-  }
-
 })
 
 const PersonalInformation = mongoose.model('PersonalInformation', personalInformationSchema)
