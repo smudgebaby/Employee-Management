@@ -57,5 +57,11 @@ export const secondaryListItems = (
       </ListItemIcon>
       <ListItemText primary="Employee Visa Status" />
     </ListItemButton>
+    <ListItemButton component={NavLink} to="/employee-profiles">
+      <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Employee profiles" />
+    </ListItemButton>
   </React.Fragment>
 );

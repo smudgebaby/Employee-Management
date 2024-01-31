@@ -2,7 +2,7 @@ import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
 import DocumentUpload from '../../../Components/DocumentUpload.jsx'
 import { useState, useEffect } from 'react';
 import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
-import {saveEmployeeInfo} from '../../../Utils/backendUtil.js';
+import {saveEmployeeInfo, getOnboardStatus} from '../../../Utils/backendUtil.js';
 
 
 const PersonalInfo = () => {
@@ -11,7 +11,7 @@ const PersonalInfo = () => {
   const [tempFormData, setTempFormData] = useState();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState()
-
+  const [onboardStatus, setOnboardStatus] = useState()
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -32,6 +32,12 @@ const PersonalInfo = () => {
         const userId = userIdData.user.id;
         setUserId(userId)
         console.log(userIdData)
+        const status = await getOnboardStatus(userId)
+        if(status) {
+          setOnboardStatus(status)
+        } else{
+          console.log('err')
+        }
 
         // fetch user information
         const userInformationResponse = await fetch(`http://localhost:3000/info/get/${userId}`, {
@@ -67,8 +73,9 @@ const PersonalInfo = () => {
 
   // update to db
   const saveData = () => {
-    setFormData(tempFormData)
-    saveEmployeeInfo(userId, tempFormData)
+    setFormData(tempFormData);
+    saveEmployeeInfo(userId, tempFormData);
+    alert('Saving data successful');
   }
 
 
@@ -126,23 +133,31 @@ const PersonalInfo = () => {
   <>
 
     {loading? <LoadSpinner /> : (
-      <EmployeeInfoForm
-        formData={tempFormData}
-        handleChange={handleChange}
-        disable={true}
-        handleAddEmergencyContact={handleAddEmergencyContact}
-        page='personalInfo'
-        revertData={revertData}
-        saveData={saveData}
-      />
-    )}
-
-
-    <DocumentUpload
-      driverLicenceId = '65b58ff52815f1ebed74a80a'
-      workAuthId = '65b5932a2815f1ebed74a830'
-    />
+      <>
       
+        <>{onboardStatus === 'Approved' ? (
+          <>
+            <EmployeeInfoForm
+              formData={tempFormData}
+              handleChange={handleChange}
+              disable={true}
+              handleAddEmergencyContact={handleAddEmergencyContact}
+              page='personalInfo'
+              revertData={revertData}
+              saveData={saveData}
+            />
+
+            <DocumentUpload
+              driverLicenceId = '65b58ff52815f1ebed74a80a'
+              workAuthId = '65b5932a2815f1ebed74a830'
+            />
+
+          </>) : (
+          <h2>You do not have access on this page</h2>)
+        }</>
+      </>
+    )}
+   
   </>)
 }
 

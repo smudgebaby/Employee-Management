@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Typography, Paper } from '@mui/material';
-import EmployeeInfoForm from '../Components/EmployeeInfoForm.jsx'
-import LoadSpinner from '../Components/LoadSpinner/LoadSpinner.jsx';
+import EmployeeInfoForm from '../../../Components/EmployeeInfoForm.jsx'
+import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
 import ListItemButton from '@mui/material/ListItemButton';
 
 const EmployeeProfilesPage = () => {

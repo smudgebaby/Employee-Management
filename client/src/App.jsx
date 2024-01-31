@@ -9,7 +9,7 @@ import Error from './Pages/Error/Error.jsx'
 import OnboardApplication from './Pages/EmployeePages/OnboardApplication/OnboardApplication.jsx'
 import PersonalInfo from './Pages/EmployeePages/PersonalInfo/PersonalInfo.jsx'
 import DocumentPage from './Pages/EmployeePages/DocumentPage.jsx';
-import EmployeeProfilesPage from './Pages/EmployeeProfilesPage';
+import EmployeeProfilesPage from './Pages/HRPages/EmployeeProfiles/EmployeeProfilesPage.jsx';
 
 import {PrivateRoute} from './Components/PrivateRoute';
 import EmployeeVisaStatusPage
