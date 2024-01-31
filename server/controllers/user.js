@@ -125,11 +125,48 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const getUsersWithPendingDocuments = async (req, res) => {
+  try {
+    // Query to find visa statuses where not all documents are 'Approved'
+    const pendingVisaStatusRecords = await User.find({
+      $or: [
+        { 'visaStatus.optReceipt.status': { $ne: 'Approved' } },
+        { 'visaStatus.optEad.status': { $ne: 'Approved' } },
+        { 'visaStatus.i983.status': { $ne: 'Approved' } },
+        { 'visaStatus.i20.status': { $ne: 'Approved' } }
+      ],
+      'role': 'Employee'
+    }).populate('visaStatus')
+    .populate('documents')
+    .populate('personalInformation');
+
+    res.status(200).json(pendingVisaStatusRecords);
+  } catch (error) {
+    res.status(500).send(`Error retrieving users with pending documents: ${error.message}`);
+  }
+};
+
+const getAllEmployees = async (req, res) =>  {
+  try {
+    const pendingVisaStatusRecords = await User.find({
+      'role': 'Employee'
+    }).populate('visaStatus')
+    .populate('documents')
+    .populate('personalInformation');
+
+    res.status(200).json(pendingVisaStatusRecords);
+  } catch (error) {
+    res.status(500).send(`Error retrieving all employees: ${error.message}`);
+  }
+}
+
 export default {
   register,
   login,
   logout,
   generateRegistrationTokenAndSendEmail,
   getUserById,
-  updateUserById
+  updateUserById,
+  getUsersWithPendingDocuments,
+  getAllEmployees
 }
