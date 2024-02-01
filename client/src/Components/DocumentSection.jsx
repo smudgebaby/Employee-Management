@@ -58,7 +58,7 @@ function DocumentSection({ title, onUpload, onDownload, status, feedback, upload
         {title !== 'OPT Receipt' &&
           <>
             <input
-              accept="application/pdf"
+              accept="*"
               style={{ display: 'none' }}
               id={`upload-${title}`}
               type="file"
