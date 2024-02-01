@@ -1,4 +1,5 @@
 import user from '../models/user.js';
+import document from '../models/document.js';
 import {
   generateLoginToken,
   generateRegistrationToken,
@@ -6,44 +7,59 @@ import {
   sendNotification,
 } from '../middleware/auth.js';
 const {User} = user;
+const {Document} = document;
 
 const register = async (req, res) => {
-  
   try {
-    const { username, email, password } = req.body
-    
-    if(await User.findOne({ username })) {
-      return res.status(400).json({ message: 'Username already exists' })
+    const { username, email, password, role, token } = req.body;
+
+
+    let user;
+    if (await User.findOne({ username })) {
+      return res.status(400).json({ message: 'Username already exists' });
     }
 
-    if(await User.findOne({ email })) {
-      return res.status(400).json({ message: 'Email already exists' })
+    if (role === 'Employee') {
+      user = await User.findOne({ email });
+      if (user && user.token === token) { // Check if user exists and token matches
+        user.username = username;
+        user.password = password;
+        await user.save(); // Ensure you await the save operation
+      } else {
+        // Handle cases where the user does not exist or the token does not match
+        return res.status(400).json({ message: 'Invalid token or user does not exist' });
+      }
+    } else if (await User.findOne({ email })) {
+      return res.status(400).json({ message: 'Email already exists' });
+    } else {
+      user = new User({ username, email, password, role });
+      await user.save();
     }
-    
-    const user = new User({ username, email, password});
+    if (user) {
+      const documentTypes = ['Profile Picture', 'Driver License', 'Work Authorization'];
+      for (const type of documentTypes) {
+        const newDocument = new Document({
+          user: user._id,
+          type: type,
+          status: 'Not Submit' // Assuming 'Not Submit' is the initial status
+        });
+        await newDocument.save();
 
-    await user.save();
-    const documentTypes = ['Profile Picture', 'Driver License', 'Work Authorization'];
-        for (const type of documentTypes) {
-            const newDocument = new Document({
-                user: newUser._id,
-                type: type,
-                status: 'Not Submit' // Assuming 'Not Submit' is the initial status
-            });
-            await newDocument.save();
+        // Optionally, link these document IDs back to the user, if your user schema stores document IDs
+        user.documents.push(newDocument._id);
+      }
+      await user.save();
 
-            // Optionally, link these document IDs back to the user, if your user schema stores document IDs
-            newUser.documents.push(newDocument._id);
-        }
-        await newUser.save();
-        
-    res.status(201).json({ message: 'User created'});
-
-  } catch(err) {
+      res.status(201).json({ message: 'User created' });
+    } else {
+      // If user is not defined by this point, it means no operation was performed
+      return res.status(400).json({ message: 'No operation performed' });
+    }
+  } catch (err) {
     console.log(err.message);
-    res.status(500).json({ message: 'Server Error'});
+    res.status(500).json({ message: 'Server Error' });
   }
-}
+};
 
 const login = async (req, res) => {
 

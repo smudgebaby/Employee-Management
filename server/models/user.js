@@ -12,7 +12,8 @@ const userSchema = new Schema({
         feedback: String,
     },
     documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }],
-    visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' }
+    visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' },
+    token: { type: String }
 });
 
 const User = mongoose.model('User', userSchema);
