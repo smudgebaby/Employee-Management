@@ -5,6 +5,7 @@ import VisaStatusPage from './Pages/EmployeePages/VisaStatus/VisaStatusPage.jsx'
 import HomePage from './Pages/HomePage/HomePage.jsx';
 import Login from './Pages/Login/Login.jsx'
 import SignUp from './Pages/SignUp/SignUp.jsx'
+import EmployeeSignUp from './Pages/SignUp/EmployeeSignUp.jsx';
 import Error from './Pages/Error/Error.jsx'
 import OnboardApplication from './Pages/EmployeePages/OnboardApplication/OnboardApplication.jsx'
 import PersonalInfo from './Pages/EmployeePages/PersonalInfo/PersonalInfo.jsx'
@@ -32,7 +33,7 @@ function App() {
             <Route path='/onboard-application' element={<PrivateRoute requiredRole='Employee'><OnboardApplication /></PrivateRoute>} />
             <Route path='/personal-info' element={<PrivateRoute requiredRole='Employee'><PersonalInfo /></PrivateRoute>}/>
             <Route path='/personal-document' element={<PrivateRoute requiredRole='Employee'><DocumentPage /></PrivateRoute>} />
-
+            <Route path='/registration' element={<EmployeeSignUp />} />
             <Route path='/employee-profiles' element={<PrivateRoute requiredRole='HR'><EmployeeProfilesPage /></PrivateRoute>} />
             <Route path='/hiring-management' element={<PrivateRoute requiredRole='HR'><HiringManagementPage/></PrivateRoute>}/>
             <Route path="/review-application/:userId"  element={<PrivateRoute requiredRole='HR'><HRReviewApplication/></PrivateRoute>}/>

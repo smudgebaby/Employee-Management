@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardActions, CardContent, Button, Typography, Dialog, AppBar, Toolbar, IconButton, Slide } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios'; 
+import FileDownload from 'js-file-download';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -11,19 +12,26 @@ const PersonalDocument = ({ documentId }) => {
   const [documentData, setDocumentData] = useState({ url: '', type: '' });
   const [previewOpen, setPreviewOpen] = useState(false);
   const [documentType, setDocumentType] = useState("");
+  const [fileName, setFileName] = useState("");
   useEffect(() => {
     const documentUrl = `http://localhost:3000/documents/${documentId}`;
     
     const fetchDocumentData = async () => {
       try {
         const response = await axios.get(documentUrl);
-        if (response.data) {
-          // Assuming the response includes a document URL and type
+        if (response.data && response.data.fileURL) {
+          // Extract the filename from the fileURL
+          const filename = response.data.fileURL;
+          setFileName(filename);
+          // Call the /show/:filename endpoint to get the presigned URL
+          const presignedUrlResponse = await axios.get(`http://localhost:3000/file/show${filename}`);
+          const presignedUrl = presignedUrlResponse.data; 
           setDocumentData({
-            url: response.data.fileURL,
+            url:  presignedUrl,
             type: response.data.type 
           });
-          const fileType = response.data.fileURL.split('.').pop();
+          const fileType = filename.split('.').pop();
+          console.log('filename', filename);
           setDocumentType(fileType);
         }
       } catch (error) {
@@ -41,6 +49,17 @@ const PersonalDocument = ({ documentId }) => {
   const closePreview = () => {
     setPreviewOpen(false);
   };
+  const handleDownload = () => {
+    axios.get(`http://localhost:3000/file/download${fileName}`, {
+      responseType: 'blob',
+    })
+    .then((response) => {
+      FileDownload(response.data, documentId + '.' + documentType);
+    })
+    .catch((error) => {
+      console.error('Error downloading the file', error);
+    });
+  }
   const isImage = (type) => {
     return ['jpg', 'jpeg', 'png', 'gif'].includes(type.toLowerCase());
   };
@@ -56,7 +75,7 @@ const PersonalDocument = ({ documentId }) => {
       </CardContent>
       <CardActions>
         <Button size="small" onClick={openPreview}>Preview</Button>
-        <Button size="small" component="a" href={documentData.url} download={`Document-${documentId}.${documentType}`}>
+        <Button size="small" onClick={handleDownload}>
           Download
         </Button>
       </CardActions>

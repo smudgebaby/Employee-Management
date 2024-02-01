@@ -1,12 +1,31 @@
-export const signUpUser = async (username, email, password) => {
-
+export const signUpEmployee = async (username, email, password, role, token) => {
   try {
+    console.log(JSON.stringify({ username, email, password, role , token}));
     const response = await fetch('http://localhost:3000/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, email, password })
+      body: JSON.stringify({ username, email, password, role , token})
+    });
+
+    return response.ok;
+    
+  } catch (error) {
+    console.error('Error signing up:', error);
+  }
+};
+
+export const signUpUser = async (username, email, password, role) => {
+
+  try {
+    console.log(JSON.stringify({ username, email, password, role }));
+    const response = await fetch('http://localhost:3000/user/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, email, password, role })
     });
 
     return response.ok;

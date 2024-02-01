@@ -13,8 +13,7 @@ const PersonalInfo = () => {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState();
   const [onboardStatus, setOnboardStatus] = useState();
-  const [driverLicenseId, setDriverLicenseId] = useState('');
-  const [workAuthId, setWorkAuthId] = useState('');
+
   
 
   useEffect(() => {
@@ -70,20 +69,6 @@ const PersonalInfo = () => {
     fetchUserId();
   }, []);
 
-  useEffect(() => {
-    axios.get('http://localhost:3000/documents/getByUserId', {
-        withCredentials: true
-    })
-    .then(response => {
-        // Adjusting here to handle the response as an object, not an array
-        setDriverLicenseId(response.data['Driver License']._id);
-        setWorkAuthId(response.data['Work Authorization']._id)
-        // console.log('response:', response.data['Driver License']._id);
-    })
-    .catch(error => {
-        console.error("Error fetching documents:", error);
-    });
-  },[userId]);
 
   const revertData = () => {
     setTempFormData(formData)
@@ -166,8 +151,6 @@ const PersonalInfo = () => {
             />
 
             <DocumentUpload
-              driverLicenseId = {driverLicenseId}
-              workAuthId = {workAuthId}
             />
 
           </>) : (

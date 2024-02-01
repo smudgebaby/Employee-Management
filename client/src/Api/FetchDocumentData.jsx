@@ -6,8 +6,9 @@ const fetchDocumentData = async (documentId) => {
         withCredentials: true
       });
       if (response.data) {
-        // console.log('***', response.data);
+        
         const fileType = response.data.fileURL.split('.').pop();
+        // console.log('***', fileType);
         return({
           url: response.data.fileURL,
           type: response.data.type,
