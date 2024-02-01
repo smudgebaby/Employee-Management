@@ -70,19 +70,19 @@ const EmployeeInformationForm = ({
             {/* Name */}
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="First Name" variant="outlined" name="firstName" 
-              value={formData.firstName} onChange={handleChange} required disabled={disableMode} />
+              value={formData.firstName || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Last Name" variant="outlined" name="lastName" 
-              value={formData.lastName} onChange={handleChange} required disabled={disableMode} />
+              value={formData.lastName || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Middle Name" variant="outlined" name="middleName" 
-              value={formData.middleName} onChange={handleChange} disabled={disableMode} />
+              value={formData.middleName || ''} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField fullWidth label="Preferred Name" variant="outlined" name="preferredName" 
-              value={formData.preferredName} onChange={handleChange} disabled={disableMode} />
+              value={formData.preferredName || ''} onChange={handleChange} disabled={disableMode} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
@@ -110,49 +110,49 @@ const EmployeeInformationForm = ({
             {/* Address */}
             <Grid item xs={6}>
               <TextField fullWidth label="Street" variant="outlined" name="address.street" 
-                value={formData.address.street} onChange={handleChange} required disabled={disableMode} />
+                value={formData.address.street || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="Building" variant="outlined" name="address.building" 
-                value={formData.address.building} onChange={handleChange} disabled={disableMode} />
+                value={formData.address.building || ''} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="City" variant="outlined" name="address.city" 
-                value={formData.address.city} onChange={handleChange} required disabled={disableMode} />
+                value={formData.address.city || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="State" variant="outlined" name="address.state" 
-                value={formData.address.state} onChange={handleChange} required disabled={disableMode} />
+                value={formData.address.state || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={6}>
               <TextField fullWidth label="ZIP" variant="outlined" name="address.zip" 
-                value={formData.address.zip} onChange={handleChange} required disabled={disableMode} />
+                value={formData.address.zip || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="Email" variant="outlined" name="email" 
-              value={formData.email} onChange={handleChange} disabled required />
+              value={formData.email || ''} onChange={handleChange} disabled required />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="Cell Phone Number" variant="outlined" name="cellPhoneNumber" 
-              value={formData.cellPhoneNumber} onChange={handleChange} required disabled={disableMode} />
+              value={formData.cellPhoneNumber || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="Work Phone Number" variant="outlined" name="workPhoneNumber" 
-              value={formData.workPhoneNumber} onChange={handleChange} disabled={disableMode} />
+              value={formData.workPhoneNumber || ''} onChange={handleChange} disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth type="date" label="Date of Birth" variant="outlined" name="dateOfBirth" 
-              value={new Date(formData.dateOfBirth).toLocaleDateString("en-CA")} onChange={handleChange} required disabled={disableMode} />
+              value={new Date(formData.dateOfBirth).toLocaleDateString("en-CA") || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label="SSN" variant="outlined" name="ssn" 
-              value={formData.ssn} onChange={handleChange} required disabled={disableMode} />
+              value={formData.ssn || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
             
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset"  disabled={disableMode}>
-                <RadioGroup row aria-label="gender" name="gender" value={formData.gender} onChange={handleChange}>
+                <RadioGroup row aria-label="gender" name="gender" value={formData.gender || ''} onChange={handleChange}>
                   <FormControlLabel value="Male" control={<Radio />} label="Male" />
                   <FormControlLabel value="Female" control={<Radio />} label="Female" />
                   <FormControlLabel value="Other" control={<Radio />} label="I do not wish to answer" />
@@ -166,7 +166,7 @@ const EmployeeInformationForm = ({
                 <Typography variant="subtitle1" gutterBottom>
                   Are you a permanent resident or citizen of the U.S.?
                 </Typography>
-                <RadioGroup row aria-label="citizenship" name="citizenship" value={formData.citizenship} onChange={handleChange}>
+                <RadioGroup row aria-label="citizenship" name="citizenship" value={formData.citizenship || ''} onChange={handleChange}>
                   <FormControlLabel value="Citizen" control={<Radio />} label="Citizen" />
                   <FormControlLabel value="GreenCard" control={<Radio />} label="Green Card" />
                   <FormControlLabel value="Other" control={<Radio />} label="Other" />
@@ -174,7 +174,7 @@ const EmployeeInformationForm = ({
               </FormControl>
             </Grid>
             {/* Work auth if not a citizen or green card holder */}
-            {formData.citizenship === 'Other' && (
+            {formData.citizenship && formData.citizenship === 'Other' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <Typography variant="h6">Work Authorization</Typography>
@@ -186,7 +186,7 @@ const EmployeeInformationForm = ({
                       labelId="workAuthorizationType-label"
                       label="Work Authorization Type"
                       name="workAuthorizationType"
-                      value={formData.workAuthorizationType}
+                      value={formData.workAuthorizationType || ''}
                       onChange={handleChange}
                       required
                     >
@@ -200,23 +200,23 @@ const EmployeeInformationForm = ({
                 </Grid>
                 <Grid item xs={6}>
                   <TextField fullWidth type="date" label="Start Date" variant="outlined" name="startWorkAuthorizationDate" 
-                    value={formData.startWorkAuthorizationDate} onChange={handleChange} required disabled={disableMode} />
+                    value={formData.startWorkAuthorizationDate || ''} onChange={handleChange} required disabled={disableMode} />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField fullWidth type="date" label="End Date" variant="outlined" name="endWorkAuthorizationDate" 
-                    value={formData.endWorkAuthorizationDate} onChange={handleChange} required disabled={disableMode} />
+                    value={formData.endWorkAuthorizationDate || ''} onChange={handleChange} required disabled={disableMode} />
                 </Grid>
               </Grid>
             )}
  
             {/* Reference */}
             {page==='onboarding' && 
-              <Reference contactsData={formData.reference} handleChange={handleChange} disable={disableMode} />
+              <Reference contactsData={formData.reference || ''} handleChange={handleChange} disable={disableMode} />
             }
             
             {/* Emergency contacts */}
             {page==='personalInfo' && 
-              <EmergencyContacts contactsData={formData.emergencyContacts} handleChange={handleChange} disable={disableMode} 
+              <EmergencyContacts contactsData={formData.emergencyContacts || ''} handleChange={handleChange} disable={disableMode} 
               handleAddEmergencyContact={handleAddEmergencyContact} />
             }
           </Grid>

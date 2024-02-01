@@ -13,12 +13,13 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import {mainListItems, secondaryListItems} from './listItems.jsx';
+import {homeListItem, mainListItems, secondaryListItems} from './listItems.jsx';
 import {Badge} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 
 function Copyright(props) {
@@ -107,6 +108,35 @@ export default function Dashboard({children}) {
     }
   };
 
+  const [userRole, setUserRole] = useState();
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/user/auth-status', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Error fetching userId');
+        }
+
+        const userIdData = await response.json();
+
+        console.log(userIdData.user)
+        setUserRole(userIdData.user.role)
+
+      } catch (error) {
+        console.error('Error fetching employee data:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -163,9 +193,11 @@ export default function Dashboard({children}) {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            {homeListItem}
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {userRole==='Employee' && mainListItems}
+            
+            {userRole==='HR' && secondaryListItems}
           </List>
         </Drawer>
         <Box

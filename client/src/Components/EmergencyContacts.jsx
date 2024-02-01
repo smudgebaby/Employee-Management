@@ -9,7 +9,7 @@ const EmergencyContacts = ({ contactsData, handleChange, disable, handleAddEmerg
         <Grid item xs={12}>
           <Typography variant="h6">Emergency contacts</Typography>
         </Grid>
-        {contactsData.map((emergencyContact, index) => (
+        {contactsData && contactsData.map((emergencyContact, index) => (
           <React.Fragment key={index}>
             <Grid item xs={12}>
               <Typography variant="h8">contact {index+1}</Typography>
