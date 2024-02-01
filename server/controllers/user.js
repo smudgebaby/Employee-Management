@@ -23,6 +23,20 @@ const register = async (req, res) => {
     const user = new User({ username, email, password});
 
     await user.save();
+    const documentTypes = ['Driver License', 'Work Authorization'];
+        for (const type of documentTypes) {
+            const newDocument = new Document({
+                user: newUser._id,
+                type: type,
+                status: 'Not Submit' // Assuming 'Not Submit' is the initial status
+            });
+            await newDocument.save();
+
+            // Optionally, link these document IDs back to the user, if your user schema stores document IDs
+            newUser.documents.push(newDocument._id);
+        }
+        await newUser.save();
+        
     res.status(201).json({ message: 'User created'});
 
   } catch(err) {

@@ -31,7 +31,7 @@ function App() {
             <Route path='/signup' element={<SignUp />} />
             <Route path='/onboard-application' element={<PrivateRoute requiredRole='Employee'><OnboardApplication /></PrivateRoute>} />
             <Route path='/personal-info' element={<PrivateRoute requiredRole='Employee'><PersonalInfo /></PrivateRoute>}/>
-            <Route path='/personal-document' element={<DocumentPage />} />
+            <Route path='/personal-document' element={<PrivateRoute requiredRole='Employee'><DocumentPage /></PrivateRoute>} />
 
             <Route path='/employee-profiles' element={<PrivateRoute requiredRole='HR'><EmployeeProfilesPage /></PrivateRoute>} />
             <Route path='/hiring-management' element={<PrivateRoute requiredRole='HR'><HiringManagementPage/></PrivateRoute>}/>

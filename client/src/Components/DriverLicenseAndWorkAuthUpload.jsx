@@ -5,7 +5,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 function DriverLicenseAndWorkAuthUpload({ onUploadDriverLicense, onUploadWorkAuthorization, uploadingDriverLicense, uploadingWorkAuthorization, driverLicenseStatus, workAuthorizationStatus }) {
   const [driverLicenseFile, setDriverLicenseFile] = useState(null);
   const [workAuthorizationFile, setWorkAuthorizationFile] = useState(null);
-
+  console.log('**', driverLicenseStatus);
   const handleDriverLicenseFileChange = (event) => {
     setDriverLicenseFile(event.target.files[0]);
   };
