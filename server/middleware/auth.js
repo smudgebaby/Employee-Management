@@ -72,3 +72,22 @@ export const sendEmail = async (recipientEmail, registrationToken) => {
 
   await transporter.sendMail(mailDetail);
 };
+
+export const sendNotification = async (recipientEmail, fileType) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailDetail = {
+    from: process.env.EMAIL_USER,
+    to: recipientEmail,
+    subject: `Submit your ${fileType}`,
+    text: `Please submit your ${fileType}`,
+  };
+
+  await transporter.sendMail(mailDetail);
+}
