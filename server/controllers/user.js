@@ -1,5 +1,10 @@
 import user from '../models/user.js';
-import {generateLoginToken, generateRegistrationToken, sendEmail} from '../middleware/auth.js'
+import {
+  generateLoginToken,
+  generateRegistrationToken,
+  sendEmail,
+  sendNotification,
+} from '../middleware/auth.js';
 const {User} = user;
 
 const register = async (req, res) => {
@@ -77,6 +82,25 @@ const generateRegistrationTokenAndSendEmail = async (req, res) => {
     await sendEmail(email, registrationToken);
 
     res.status(200).json({ message: 'Registration token sent' });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+const generateNotificationEmail = async (req, res) => {
+
+  try {
+    const { email, type } = req.body;
+
+    if (!email ) {
+      return res.status(400).json({ message: 'Invalid email address' });
+    }
+
+    await sendNotification(email, type);
+
+    res.status(200).json({ message: 'Notification sent' });
 
   } catch (err) {
     console.error(err);
@@ -196,6 +220,51 @@ const rejectApplication = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getUsersWithPendingDocuments = async (req, res) => {
+  try {
+    const isAll = req.body.isAll;
+    // Query to find visa statuses where not all documents are 'Approved'
+    if (isAll) {
+      const allVisaStatusRecords = await User.find({
+        'role': 'Employee'
+      }).
+        populate('visaStatus').
+        populate('documents').
+        populate('personalInformation');
+      res.status(200).json(allVisaStatusRecords);
+    } else {
+      const pendingVisaStatusRecords = await User.find({
+        $or: [
+          {'visaStatus.optReceipt.status': {$ne: 'Approved'}},
+          {'visaStatus.optEad.status': {$ne: 'Approved'}},
+          {'visaStatus.i983.status': {$ne: 'Approved'}},
+          {'visaStatus.i20.status': {$ne: 'Approved'}}
+        ],
+        'role': 'Employee'
+      }).
+        populate('visaStatus').
+        populate('documents').
+        populate('personalInformation');
+      res.status(200).json(pendingVisaStatusRecords);
+    }
+  } catch (error) {
+    res.status(500).send(`Error retrieving users with documents: ${error.message}`);
+  }
+};
+
+const getAllEmployees = async (req, res) =>  {
+  try {
+    const pendingVisaStatusRecords = await User.find({
+      'role': 'Employee'
+    }).populate('visaStatus')
+    .populate('documents')
+    .populate('personalInformation');
+
+    res.status(200).json(pendingVisaStatusRecords);
+  } catch (error) {
+    res.status(500).send(`Error retrieving all employees: ${error.message}`);
+  }
+}
 
 export default {
   register,
@@ -208,5 +277,8 @@ export default {
   getRejectedApplications,
   getApprovedApplications,
   approveApplication,
-  rejectApplication
+  rejectApplication,
+  getUsersWithPendingDocuments,
+  getAllEmployees,
+  generateNotificationEmail
 };
