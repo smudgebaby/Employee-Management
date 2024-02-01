@@ -40,6 +40,7 @@ const Layout = ({ status, title, description, buttonText, isValidEmail, isValidP
     const user = await signInUser(email, password);
     if(user) {
       navigate('/')
+      window.location.reload();
     } else {
       alert('Error signing in');
     }

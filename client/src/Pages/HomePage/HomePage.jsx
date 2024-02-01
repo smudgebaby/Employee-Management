@@ -11,6 +11,7 @@ function HomePage() {
       await axios.post('http://localhost:3000/user/logout', {}, { withCredentials: true });
       console.log('Logged out successfully');
       navigate('/login');
+      window.location.reload();
     } catch (error) {
       console.error('Error logging out:', error);
     }
