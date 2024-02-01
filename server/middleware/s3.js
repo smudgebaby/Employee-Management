@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import * as fs from 'fs';
 import express from 'express';
 import multer from 'multer';
+import * as path from 'path';
 
 AWS.config.update({
   accessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -19,7 +20,9 @@ const uploadFile = async (req, res) => {
   const s3Params = {
     Bucket: process.env.S3_BUCKET_NAME,
     Key: file.originalname,
-    Body: fs.createReadStream(file.path)
+    Body: fs.createReadStream(file.path),
+    ContentDisposition: 'inline',
+    ContentType: 'application/pdf'
   };
 
   s3.upload(s3Params, function(err, data) {
@@ -54,8 +57,52 @@ const downloadFile = async (req, res) => {
   });
 }
 
+const getPresignedReadUrl = async (req, res) => {
+  const filename = req.params.filename;
+
+  const params = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: filename,
+    Expires: 60 * 5,
+  };
+
+  try {
+    const url = await s3.getSignedUrlPromise('getObject', params);
+    console.log('Pre-signed URL:', url);
+    return res.status(200).send(url);
+  } catch (error) {
+    res.status(500).send('Error generating pre-signed URL:', error);
+    console.error('Error generating pre-signed URL:', error);
+  }
+};
+
+const getMultipleUrl = async (req, res) => {
+  const keys = req.body.keys;
+
+  try {
+    const urls = await Promise.all(keys.map(async (key) => {
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: key.substring(1),
+        Expires: 60 * 5, // URL expires in 5 minutes
+      };
+      return await s3.getSignedUrlPromise('getObject', params);
+    }));
+
+    return res.status(200).json(urls);
+  } catch (error) {
+    console.error('Error generating pre-signed URLs:', error);
+    return res.status(500).send('Error generating pre-signed URLs.');
+  }
+};
+
+
 router.post('/upload', upload.single('file'), uploadFile);
 
 router.get('/download/:filename', downloadFile);
+
+router.get('/show/:filename', getPresignedReadUrl);
+
+router.post('/showMultiple', getMultipleUrl);
 
 export default router;
