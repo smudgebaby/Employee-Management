@@ -8,17 +8,22 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import {NavLink} from 'react-router-dom';
 import {ListSubheader} from '@mui/material';
 
-export const mainListItems = (
+
+export const homeListItem = (
   <React.Fragment>
-    <ListSubheader component="div" inset>
-      Employee
-    </ListSubheader>
     <ListItemButton component={NavLink} to="/">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Home" />
     </ListItemButton>
+  </React.Fragment>
+)
+export const mainListItems = (
+  <React.Fragment>
+    <ListSubheader component="div" inset>
+      Employee
+    </ListSubheader>
     <ListItemButton component={NavLink} to="/visa-status">
       <ListItemIcon>
         <ShoppingCartIcon />
