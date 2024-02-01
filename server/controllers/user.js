@@ -149,6 +149,77 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const getPendingApplications = async (req, res) => {
+  console.log('pending:');
+  try {
+    
+    const pendingUsers = await User.find({ 'onboardingStatus.status': 'Pending' })
+      .populate('personalInformation')
+      .populate('documents')
+      .select('username email personalInformation');
+    console.log('pending:', pendingUsers);
+    res.status(200).json(pendingUsers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get all rejected onboarding applications
+const getRejectedApplications = async (req, res) => {
+  try {
+    const rejectedUsers = await User.find({ 'onboardingStatus.status': 'Rejected' })
+      .populate('personalInformation')
+      .populate('documents')
+      .select('username email personalInformation onboardingStatus.feedback');
+    
+    res.status(200).json(rejectedUsers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get all approved onboarding applications
+const getApprovedApplications = async (req, res) => {
+  try {
+    const approvedUsers = await User.find({ 'onboardingStatus.status': 'Approved' })
+      .populate('personalInformation')
+      .populate('documents')
+      .select('username email personalInformation');
+    
+    res.status(200).json(approvedUsers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Approve an onboarding application
+const approveApplication = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    await User.findByIdAndUpdate(userId, {
+      'onboardingStatus.status': 'Approved'
+    });
+    
+    res.status(200).json({ message: 'Application approved successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Reject an onboarding application with feedback
+const rejectApplication = async (req, res) => {
+  const { userId, feedback } = req.body;
+  try {
+    await User.findByIdAndUpdate(userId, {
+      'onboardingStatus.status': 'Rejected',
+      'onboardingStatus.feedback': feedback
+    });
+    
+    res.status(200).json({ message: 'Application rejected with feedback.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 const getUsersWithPendingDocuments = async (req, res) => {
   try {
     const isAll = req.body.isAll;
@@ -202,7 +273,12 @@ export default {
   generateRegistrationTokenAndSendEmail,
   getUserById,
   updateUserById,
+  getPendingApplications,
+  getRejectedApplications,
+  getApprovedApplications,
+  approveApplication,
+  rejectApplication,
   getUsersWithPendingDocuments,
   getAllEmployees,
   generateNotificationEmail
-}
+};

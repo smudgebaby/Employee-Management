@@ -14,6 +14,8 @@ import EmployeeProfilesPage from './Pages/HRPages/EmployeeProfiles/EmployeeProfi
 import {PrivateRoute} from './Components/PrivateRoute';
 import EmployeeVisaStatusPage
   from './Pages/HRPages/EmpVisaStatus/EmployeeVisaStatusPage.jsx';
+import HiringManagementPage from './Pages/HRPages/HiringManagementPage/HiringManagementPage';
+import HRReviewApplication from './Pages/HRPages/HiringManagementPage/HRReveiwApplication';
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
             <Route path='/personal-document' element={<DocumentPage />} />
 
             <Route path='/employee-profiles' element={<PrivateRoute requiredRole='HR'><EmployeeProfilesPage /></PrivateRoute>} />
+            <Route path='/hiring-management' element={<PrivateRoute requiredRole='HR'><HiringManagementPage/></PrivateRoute>}/>
+            <Route path="/review-application/:userId"  element={<PrivateRoute requiredRole='HR'><HRReviewApplication/></PrivateRoute>}/>
             <Route path='*' element={<Error>Oops, something went wrong!</Error>} />
           </Routes>
         </Dashboard>

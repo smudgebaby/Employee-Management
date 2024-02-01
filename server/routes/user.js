@@ -1,7 +1,13 @@
 import express from 'express';
 import {checkAuthentication} from '../middleware/auth.js';
 import userController from '../controllers/user.js';
-const {generateNotificationEmail, getAllEmployees, getUsersWithPendingDocuments, updateUserById, getUserById, logout, register, login, generateRegistrationTokenAndSendEmail} = userController
+const {generateNotificationEmail, getAllEmployees, getUsersWithPendingDocuments, updateUserById, getUserById, logout, register, login, generateRegistrationTokenAndSendEmail,
+    getPendingApplications,
+    getRejectedApplications,
+    getApprovedApplications,
+    approveApplication,
+    rejectApplication} = userController
+
 
 const router = express.Router();
 
@@ -25,5 +31,9 @@ router.get('/getAllEmployees', getAllEmployees);
 
 router.post('/updateById/:id', updateUserById);
 
-
+router.get('/pending', getPendingApplications);
+router.get('/rejected', getRejectedApplications);
+router.get('/approved', getApprovedApplications);
+router.post('/approve', approveApplication);
+router.post('/reject', rejectApplication);
 export default router;
