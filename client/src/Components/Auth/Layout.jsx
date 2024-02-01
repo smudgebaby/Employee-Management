@@ -101,6 +101,16 @@ const Layout = ({ status, title, description, buttonText, isValidEmail, isValidP
             <button type="submit" className={`${status}-button`} disabled={(!isValidPassword(password)) || (!isValidEmail(email))}>
               {buttonText}
             </button>
+            {status === 'signin' &&
+              <button onClick={() => navigate('/signup')} className='general-button' >
+                Sign Up
+              </button>
+            }
+            {status === 'signup' &&
+              <button onClick={() => navigate('/login')} className='general-button' >
+                Sign In
+              </button>
+            }
           </form>
 
         </div>

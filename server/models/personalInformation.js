@@ -25,7 +25,7 @@ const personalInformationSchema = new mongoose.Schema({
   gender: { 
     type: String, 
     enum: ['Male', 'Female', 'Other'],
-    required: false
+    required: true
   },
   address: {
     building: { 
@@ -54,6 +54,7 @@ const personalInformationSchema = new mongoose.Schema({
     required: true 
   },
   workPhoneNumber: String,
+  email: { type: String, required: true },
   employment: {
     visaTitle: String,
     startDate: Date,
@@ -67,6 +68,7 @@ const personalInformationSchema = new mongoose.Schema({
     workAuthorizationType: {
       type: String,
       enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other'],
+      default: 'Other',
     },
   },
   emergencyContacts: [{
@@ -85,11 +87,6 @@ const personalInformationSchema = new mongoose.Schema({
     email: String,
     relationship: String
   },
-  onboardingStatus: {
-    status: {type: String, default: 'not submitted'},
-    feedback: String
-  }
-
 })
 
 const PersonalInformation = mongoose.model('PersonalInformation', personalInformationSchema)

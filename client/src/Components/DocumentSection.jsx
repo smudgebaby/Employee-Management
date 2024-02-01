@@ -4,7 +4,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 // eslint-disable-next-line react/prop-types
-function DocumentSection({ title, onUpload, status, feedback, uploading, isI983, downloadEmptyTemplateUrl, downloadSampleTemplateUrl }) {
+function DocumentSection({ title, onUpload, onDownload, status, feedback, uploading, isI983}) {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -29,15 +29,16 @@ function DocumentSection({ title, onUpload, status, feedback, uploading, isI983,
             Feedback: {feedback}
           </Typography>
         )}
-        {isI983 && (status === 'Approved' ||  status === 'Rejected') && (
+        {isI983 && (
           <div>
             <Button
               variant="contained"
               color="primary"
               startIcon={<FileDownloadIcon />}
-              href={downloadEmptyTemplateUrl}
               download
+              onClick={onDownload}
               sx={{ mt: 1, mr: 1 }}
+              disabled={!(status === 'Please Submit' || status === 'Rejected')}
             >
               Download Empty Template
             </Button>
@@ -45,46 +46,54 @@ function DocumentSection({ title, onUpload, status, feedback, uploading, isI983,
               variant="contained"
               color="primary"
               startIcon={<FileDownloadIcon />}
-              href={downloadSampleTemplateUrl}
               download
+              onClick={onDownload}
               sx={{ mt: 1 }}
+              disabled={!(status === 'Please Submit' || status === 'Rejected')}
             >
               Download Sample Template
             </Button>
           </div>
         )}
-        <input
-          accept="application/pdf"
-          style={{ display: 'none' }}
-          id={`upload-${title}`}
-          type="file"
-          onChange={handleFileChange}
-          disabled={status !== 'Approved' || uploading}
-        />
-        <label htmlFor={`upload-${title}`}>
-          <Button
-            variant="contained"
-            component="span"
+        {title !== 'OPT Receipt' &&
+          <>
+            <input
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              id={`upload-${title}`}
+              type="file"
+              onChange={handleFileChange}
+              disabled={!(status === 'Please Submit' || status === 'Rejected') || uploading}
+            />
+            <label htmlFor={`upload-${title}`}>
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<UploadFileIcon />}
+                disabled={!(status === 'Please Submit' || status === 'Rejected') || uploading}
+                sx={{ mt: 2 }}
+              >
+                Choose File
+              </Button>
+            </label>
+            {uploading && <LinearProgress sx={{ mt: 1 }} />}
+          </>
+        }
+        </CardContent>
+        {title !== 'OPT Receipt' &&
+          <CardActions>
+            <Button
             startIcon={<UploadFileIcon />}
-            disabled={status !== 'Approved' || uploading}
-            sx={{ mt: 2 }}
-          >
-            Choose File
-          </Button>
-        </label>
-        {uploading && <LinearProgress sx={{ mt: 1 }} />}
-      </CardContent>
-      <CardActions>
-        <Button
-          startIcon={<UploadFileIcon />}
-          variant="contained"
-          color="primary"
-          onClick={uploadFile}
-          disabled={!file || status !== 'Approved' || uploading}
-        >
-          Upload
-        </Button>
-      </CardActions>
+            variant="contained"
+            color="primary"
+            onClick={uploadFile}
+            disabled={!file || !(status === 'Please Submit' || status === 'Rejected') || uploading}
+            >
+            Upload
+            </Button>
+          </CardActions>
+        }
+
     </Card>
   );
 }

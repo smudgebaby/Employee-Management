@@ -5,9 +5,12 @@ const userSchema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, required: false, enum: ['employee', 'HR'], default: 'HR' },
+    role: { type: String, required: false, enum: ['Employee', 'HR'], default: 'HR' },
     personalInformation: { type: Schema.Types.ObjectId, ref: 'PersonalInformation' },
-    onboardingStatus: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
+    onboardingStatus: {
+        status: { type: String, enum: ['Never Submit','Pending', 'Approved', 'Rejected'], default: 'Never Submitted' },
+        feedback: String,
+    },
     documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }],
     visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' }
 });

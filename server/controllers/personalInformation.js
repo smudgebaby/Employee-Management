@@ -1,4 +1,6 @@
 import personalInformation from '../models/personalInformation.js';
+import userModel from '../models/user.js';
+const {User} = userModel;
 const {PersonalInformation} = personalInformation
 
 const createPersonalInformation = async (req, res) => {
@@ -54,7 +56,7 @@ const getPersonalInformation = async (req, res) => {
     const employeeInformation = await PersonalInformation.findOne({ id });
 
     if(!employeeInformation) {
-      return res.status(404).json({ message: 'Employee personal information not found' })
+      return res.status(404).json({ message: 'EmployeePages personal information not found' })
     }
 
     res.status(200).json(employeeInformation);
@@ -66,9 +68,26 @@ const getPersonalInformation = async (req, res) => {
 }
 
 
+const getAllPersonalInformation = async (req, res) => {
+  try {
+    const allPersonalInformation = await PersonalInformation.find();
+
+    if (!allPersonalInformation || allPersonalInformation.length === 0) {
+      return res.status(404).json({ message: 'No personal information records found' });
+    }
+
+    res.status(200).json({ data: allPersonalInformation });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: 'get Server Error' });
+  }
+};
+
+
 
 export default {
   createPersonalInformation,
   updatePersonalInformation,
   getPersonalInformation,
+  getAllPersonalInformation,
 }
