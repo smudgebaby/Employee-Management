@@ -3,8 +3,27 @@ import axios from 'axios';
 import { Container, Typography, Grid } from '@mui/material';
 import DriverLicenseAndWorkAuthUpload from '../Components/DriverLicenseAndWorkAuthUpload'; // Make sure this is correctly imported
 import fetchDocumentData from '../Api/FetchDocumentData';
-function DocumentUpload({driverLicenseId, workAuthId}) {
+function DocumentUpload() {
   // console.log(driverLicenseId, workAuthId)
+  const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [workAuthId, setWorkAuthId] = useState('');
+  const [profilePictureId, setProfilePictureId] = useState('');
+  
+  useEffect(() => {
+    axios.get('http://localhost:3000/documents/getByUserId', {
+        withCredentials: true
+    })
+    .then(response => {
+        setDriverLicenseId(response.data['Driver License']?._id);
+        setWorkAuthId(response.data['Work Authorization']?._id);
+        setProfilePictureId(response.data['Profile Picture']?._id);
+        // console.log('response:', response.data['Driver License']._id);
+    })
+    .catch(error => {
+        console.error("Error fetching documents:", error);
+    });
+  },[]);
+
   const [driverLicenseStatus, setDriverLicenseStatus] = useState({
     status: 'Never Submit',
     uploading: false,
@@ -15,13 +34,17 @@ function DocumentUpload({driverLicenseId, workAuthId}) {
     uploading: false,
   });
 
-  // Your existing code for fetching and managing document sections
+  const [profilePictureStatus, setProfilePictureStatus] = useState({
+    status: 'Never Submit',
+    uploading: false,
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const DL = await fetchDocumentData(driverLicenseId);
         const WA = await fetchDocumentData(workAuthId);
-  
+        const PP = await fetchDocumentData(profilePictureId);
         if (DL) {
           setDriverLicenseStatus({
             status: DL.status || 'Never Submit', // Fallback to 'Never Submit' if DL.status is undefined
@@ -34,6 +57,12 @@ function DocumentUpload({driverLicenseId, workAuthId}) {
             uploading: false,
           });
         }
+        if (PP) {
+          setProfilePictureStatus({
+            status: PP.status || 'Never Submit',
+            uploading: false,
+          });
+        }
       } catch (error) {
         console.error('Error fetching document data:', error);
         // Optionally set state to reflect the error condition
@@ -42,65 +71,72 @@ function DocumentUpload({driverLicenseId, workAuthId}) {
   
     // Call the async fetchData function
     fetchData();
-  }, [driverLicenseId, workAuthId]);
-  const handleUploadDriverLicense = (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    setDriverLicenseStatus({ ...driverLicenseStatus, uploading: true });
-
-    axios.post(`http://localhost:3000/documents/${workAuthId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => {
-      // Assuming the response includes the document data with a status
-      setDriverLicenseStatus({
-        status: response.data.status,
-        uploading: false,
+  }, [driverLicenseId, workAuthId, profilePictureId]);
+  
+  const updateDocumentWithFileUrl = async (documentId, fileUrl) => {
+    try {
+      const updateData = {
+        fileURL: fileUrl,
+        status: 'Uploaded', 
+      };
+  
+      const response = await axios.put(`http://localhost:3000/documents/${documentId}`, updateData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-    })
-    .catch((error) => {
-      console.error('Error uploading driver license:', error);
-      setDriverLicenseStatus({ ...driverLicenseStatus, uploading: false });
-      // Handle error appropriately
-    });
+  
+      console.log('Document updated successfully', response.data);
+  
+     
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
   };
 
-  const handleUploadWorkAuthorization = (file) => {
+  const uploadDocument = async (documentId, file, setStatus) => {
     const formData = new FormData();
     formData.append('file', file);
-
-    setWorkAuthorizationStatus({ ...workAuthorizationStatus, uploading: true });
-
-    axios.post(`/documents/${workAuthId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => {
-      // Assuming the response includes the document data with a status
-      setWorkAuthorizationStatus({
-        status: response.data.status,
+  
+    setStatus(prevState => ({ ...prevState, uploading: true }));
+  
+    try {
+      const uploadResponse = await axios.post(`http://localhost:3000/file/upload`, formData);
+  
+      const fileUrl = uploadResponse.data.documentName; // Get the file URL from the response
+      
+      // Now update the document with the new file URL
+      await updateDocumentWithFileUrl(documentId, `/${fileUrl}`);
+  
+      setStatus({
+        status: 'Uploaded',
         uploading: false,
       });
-    })
-    .catch((error) => {
-      console.error('Error uploading work authorization:', error);
-      setWorkAuthorizationStatus({ ...workAuthorizationStatus, uploading: false });
-      // Handle error appropriately
-    });
+  
+    } catch (error) {
+      console.error(`Error uploading document: ${documentId}`, error);
+      setStatus(prevState => ({ ...prevState, uploading: false }));
+    }
   };
+
+  // Handlers for each document type
+  const handleUploadDriverLicense = (file) => uploadDocument(driverLicenseId, file, setDriverLicenseStatus);
+  const handleUploadWorkAuthorization = (file) => uploadDocument(workAuthId, file, setWorkAuthorizationStatus);
+  const handleUploadProfilePicture = (file) => uploadDocument(profilePictureId, file, setProfilePictureStatus);
+
 
   return(
-    <DriverLicenseAndWorkAuthUpload
+      <DriverLicenseAndWorkAuthUpload
       onUploadDriverLicense={handleUploadDriverLicense}
       onUploadWorkAuthorization={handleUploadWorkAuthorization}
+      onUploadProfilePicture={handleUploadProfilePicture}
       uploadingDriverLicense={driverLicenseStatus.uploading}
       uploadingWorkAuthorization={workAuthorizationStatus.uploading}
+      uploadingProfilePicture={profilePictureStatus.uploading}
       driverLicenseStatus={driverLicenseStatus.status}
       workAuthorizationStatus={workAuthorizationStatus.status}
-    />);
-  }
+      profilePictureStatus={profilePictureStatus.status}
+    />
+  );
+}
   export default DocumentUpload;

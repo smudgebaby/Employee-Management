@@ -1,7 +1,10 @@
 import Layout from '../../Components/auth/Layout';
+import { useLocation } from 'react-router-dom';
 
-const SignUp = () => {
-
+const EmployeeSignUp = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get('token');
   
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,9 +22,10 @@ const SignUp = () => {
       buttonText="Create Account"
       isValidEmail={isValidEmail}
       isValidPassword={isValidPassword}
-      role='HR'
+      role = 'Employee'
+      token = {token}
     />
   );
 };
 
-export default SignUp;
+export default EmployeeSignUp;

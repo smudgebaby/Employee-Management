@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import {signInUser, signUpUser} from '../../Utils/backendUtil.js';
+import {signInUser, signUpEmployee, signUpUser} from '../../Utils/backendUtil.js';
 import {useNavigate} from 'react-router-dom';
 import './Layout.css';
 
-const Layout = ({ status, title, description, buttonText, isValidEmail, isValidPassword }) => {
+const Layout = ({ status, title, description, buttonText, isValidEmail, isValidPassword, role, token}) => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,11 +28,21 @@ const Layout = ({ status, title, description, buttonText, isValidEmail, isValidP
   };
 
   const handleSignUp = async () => {
-    const ok = await signUpUser(username, email, password);
+    if (role == 'HR'){
+    const ok = await signUpUser(username, email, password, role, token);
     if(ok) {
       navigate('/login');
     } else {
       alert('Error signing up');
+    }
+    }
+    else{
+      const ok = await signUpEmployee(username, email, password, role, token);
+      if(ok) {
+        navigate('/login');
+      } else {
+        alert('Error signing up');
+      }
     }
   }
 

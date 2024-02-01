@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 // Assuming the existence of a service to generate token, send email, and update the history
 // import { generateTokenAndSendEmailAndUpdateHistory } from '../Utils/backendUtil';
 
@@ -13,10 +14,13 @@ const TokenGenerationForm = ({ onEmailSent }) => {
     };
 
     const handleSubmit = async (event) => {
+        console.log(email);
         event.preventDefault();
-        // Call your API or utility function here
-        // const result = await generateTokenAndSendEmailAndUpdateHistory(email);
-        // Placeholder action
+        const tokenUrl = `http://localhost:3000/user/generate-registration-token`;  
+        const response = await axios.post(tokenUrl, {
+          withCredentials: true,
+          email: email
+        });
         alert('Token generated and email sent!');
         onEmailSent(); // Notify parent component to refresh email history
         setEmail(''); // Reset email field after submission

@@ -2,16 +2,31 @@ import React, { useState } from 'react';
 import { Container, Button, Card, CardContent, CardActions, Typography, LinearProgress } from '@mui/material';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-function DriverLicenseAndWorkAuthUpload({ onUploadDriverLicense, onUploadWorkAuthorization, uploadingDriverLicense, uploadingWorkAuthorization, driverLicenseStatus, workAuthorizationStatus }) {
+function DriverLicenseWorkAuthAndProfilePictureUpload({ 
+  onUploadDriverLicense, 
+  onUploadWorkAuthorization, 
+  onUploadProfilePicture, // Add a prop for uploading the profile picture
+  uploadingDriverLicense, 
+  uploadingWorkAuthorization, 
+  uploadingProfilePicture, // Add state for uploading the profile picture
+  driverLicenseStatus, 
+  workAuthorizationStatus, 
+  profilePictureStatus // Add a state for the profile picture status
+}) {
   const [driverLicenseFile, setDriverLicenseFile] = useState(null);
   const [workAuthorizationFile, setWorkAuthorizationFile] = useState(null);
-  console.log('**', driverLicenseStatus);
+  const [profilePictureFile, setProfilePictureFile] = useState(null); // State for profile picture file
+
   const handleDriverLicenseFileChange = (event) => {
     setDriverLicenseFile(event.target.files[0]);
   };
 
   const handleWorkAuthorizationFileChange = (event) => {
     setWorkAuthorizationFile(event.target.files[0]);
+  };
+
+  const handleProfilePictureFileChange = (event) => {
+    setProfilePictureFile(event.target.files[0]); // Handle profile picture file selection
   };
 
   const uploadDriverLicenseFile = () => {
@@ -23,6 +38,12 @@ function DriverLicenseAndWorkAuthUpload({ onUploadDriverLicense, onUploadWorkAut
   const uploadWorkAuthorizationFile = () => {
     if (workAuthorizationFile) {
       onUploadWorkAuthorization(workAuthorizationFile);
+    }
+  };
+
+  const uploadProfilePictureFile = () => {
+    if (profilePictureFile) {
+      onUploadProfilePicture(profilePictureFile); // Upload the profile picture file
     }
   };
 
@@ -106,8 +127,47 @@ function DriverLicenseAndWorkAuthUpload({ onUploadDriverLicense, onUploadWorkAut
           </Button>
         </CardActions>
       </Card>
+      <Card variant="outlined" sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="h6">Profile Picture</Typography>
+          <Typography color="textSecondary" gutterBottom>
+            Status: {profilePictureStatus}
+          </Typography>
+          <input
+            accept="image/*" // Accept only images
+            style={{ display: 'none' }}
+            id="upload-profile-picture"
+            type="file"
+            onChange={handleProfilePictureFileChange}
+          />
+          <label htmlFor="upload-profile-picture">
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<UploadFileIcon />}
+              disabled={uploadingProfilePicture}
+              sx={{ mt: 2 }}
+            >
+              Choose File
+            </Button>
+          </label>
+          {uploadingProfilePicture && <LinearProgress sx={{ mt: 1 }} />}
+        </CardContent>
+        <CardActions>
+          <Button
+            startIcon={<UploadFileIcon />}
+            variant="contained"
+            color="primary"
+            onClick={uploadProfilePictureFile}
+            disabled={!profilePictureFile || uploadingProfilePicture}
+          >
+            Upload Profile Picture
+          </Button>
+        </CardActions>
+      </Card>
     </Container>
   );
 }
+  
 
-export default DriverLicenseAndWorkAuthUpload;
+export default DriverLicenseWorkAuthAndProfilePictureUpload;
