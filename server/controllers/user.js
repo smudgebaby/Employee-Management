@@ -23,7 +23,7 @@ const register = async (req, res) => {
     const user = new User({ username, email, password});
 
     await user.save();
-    const documentTypes = ['Driver License', 'Work Authorization'];
+    const documentTypes = ['Profile Picture', 'Driver License', 'Work Authorization'];
         for (const type of documentTypes) {
             const newDocument = new Document({
                 user: newUser._id,
