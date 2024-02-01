@@ -3,6 +3,7 @@ import DocumentUpload from '../../../Components/DocumentUpload.jsx'
 import { useState, useEffect } from 'react';
 import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
 import {saveEmployeeInfo, getOnboardStatus} from '../../../Utils/backendUtil.js';
+import axios from 'axios';
 
 
 const PersonalInfo = () => {
@@ -10,8 +11,11 @@ const PersonalInfo = () => {
   const [formData, setFormData] = useState();
   const [tempFormData, setTempFormData] = useState();
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState()
-  const [onboardStatus, setOnboardStatus] = useState()
+  const [userId, setUserId] = useState();
+  const [onboardStatus, setOnboardStatus] = useState();
+  const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [workAuthId, setWorkAuthId] = useState('');
+  
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -66,6 +70,20 @@ const PersonalInfo = () => {
     fetchUserId();
   }, []);
 
+  useEffect(() => {
+    axios.get('http://localhost:3000/documents/getByUserId', {
+        withCredentials: true
+    })
+    .then(response => {
+        // Adjusting here to handle the response as an object, not an array
+        setDriverLicenseId(response.data['Driver License']._id);
+        setWorkAuthId(response.data['Work Authorization']._id)
+        // console.log('response:', response.data['Driver License']._id);
+    })
+    .catch(error => {
+        console.error("Error fetching documents:", error);
+    });
+  },[userId]);
 
   const revertData = () => {
     setTempFormData(formData)
@@ -148,8 +166,8 @@ const PersonalInfo = () => {
             />
 
             <DocumentUpload
-              driverLicenceId = '65b58ff52815f1ebed74a80a'
-              workAuthId = '65b5932a2815f1ebed74a830'
+              driverLicenseId = {driverLicenseId}
+              workAuthId = {workAuthId}
             />
 
           </>) : (
