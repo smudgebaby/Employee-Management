@@ -38,19 +38,38 @@ function DocumentPreviewModal({
   };
 
   const onSubmit = () => {
-    axios.post(`http://localhost:3000/visa/update/${visaId}`, {
+    let payload = {
       [documentType]: {
         'status': status,
         'feedback': feedback,
         'fileUrl': documentUrl
-      },
-    }).then((response) => {
-      alert(response.data);
+      }
+    };
+
+    // Determine the next document type and status based on the current document type
+    if (status === 'Approved') {
+      const nextDocType = documentType === 'optReceipt' ? 'optEad' :
+        documentType === 'optEad' ? 'i983' :
+          documentType === 'i983' ? 'i20' : '';
+      const nextDocStatus = 'Please Submit';
+
+      // If there is a next document type, add it to the payload
+      if (nextDocType !== '') {
+        payload[nextDocType] = { 'status': nextDocStatus };
+      }
+    }
+
+    axios.post(`http://localhost:3000/visa/update/${visaId}`, payload)
+    .then((response) => {
+      alert('Update successful');
       setModalOpen(false);
-    }).catch(error => {
+    })
+    .catch(error => {
       console.error('Error submitting feedback', error);
+      alert('Update failed');
     });
   };
+
 
   return (
     <div className="modal-container">

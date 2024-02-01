@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 // Assuming the existence of a service to generate token, send email, and update the history
-// import { generateTokenAndSendEmailAndUpdateHistory } from '../Utils/backendUtil';
 
 const TokenGenerationForm = ({ onEmailSent }) => {
     const [email, setEmail] = useState('');

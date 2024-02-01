@@ -7,8 +7,6 @@ const visaStatusSchema = new Schema({
     ref: 'User',
     required: true
   },
-  startDate: Date,
-  endDate: Date,
   optReceipt: {
     status: String,
     feedback: String,
