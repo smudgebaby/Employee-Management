@@ -22,7 +22,7 @@ const uploadFile = async (req, res) => {
     Key: file.originalname,
     Body: fs.createReadStream(file.path),
     ContentDisposition: 'inline',
-    ContentType: 'application/pdf'
+    ContentType: file.mimetype
   };
 
   s3.upload(s3Params, function(err, data) {
