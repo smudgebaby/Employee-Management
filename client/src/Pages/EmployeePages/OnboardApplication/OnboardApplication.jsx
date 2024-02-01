@@ -170,6 +170,7 @@ const OnboardApplication = () => {
       const updatedUser = updateUser(userId, {personalInformationId: infoId, onboardingStatus: {'status': 'Pending'}})
       if(updatedUser) {
         alert('Submit information successful');
+        window.location.reload();
         setOnboardStatus('Pending');
       } else {
         alert('Error update user');
@@ -210,12 +211,16 @@ const OnboardApplication = () => {
             />}
 
           {onboardStatus.status === 'Pending' &&
-            <EmployeeInfoForm
-              formData={formData}
-              handleChange={handleChange}
-              disable={true}
-              page='onboarding'
-            />}
+            <>
+              <h4>Pending for HR approve...</h4>
+              <EmployeeInfoForm
+                formData={formData}
+                handleChange={handleChange}
+                disable={true}
+                page='onboarding'
+              />
+            </>
+          }
 
           {onboardStatus.status === 'Approved' &&
             <div>
