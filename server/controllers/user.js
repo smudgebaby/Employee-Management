@@ -180,14 +180,14 @@ const updateUserById = async (req, res) => {
 };
 
 const getPendingApplications = async (req, res) => {
-  console.log('pending:');
+  // console.log('pending:');
   try {
     
     const pendingUsers = await User.find({ 'onboardingStatus.status': 'Pending' })
       .populate('personalInformation')
       .populate('documents')
       .select('username email personalInformation');
-    console.log('pending:', pendingUsers);
+    // console.log('pending:', pendingUsers);
     res.status(200).json(pendingUsers);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -296,6 +296,23 @@ const getAllEmployees = async (req, res) =>  {
   }
 }
 
+const getAllEmployeesToken = async (req, res) => {
+  try{
+    const allEmployees = await User.find({'role' : 'Employee'}).populate('personalInformation').select('email token personalInformation');
+    console.log(allEmployees);
+    const data = allEmployees.map(employee => ({
+      email: employee.email,
+      token: employee.token,
+      status: employee.personalInformation ? 'Submitted' : 'NotSubmitted'
+    }));
+    console.log(data);
+    res.status(200).json(data);
+  }
+  catch(error){
+    res.status(500).send(`Error get all employees token: ${error.message}`);
+  }
+}
+
 export default {
   register,
   login,
@@ -310,5 +327,6 @@ export default {
   rejectApplication,
   getUsersWithPendingDocuments,
   getAllEmployees,
-  generateNotificationEmail
+  generateNotificationEmail,
+  getAllEmployeesToken
 };

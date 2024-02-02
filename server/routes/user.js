@@ -6,7 +6,7 @@ const {generateNotificationEmail, getAllEmployees, getUsersWithPendingDocuments,
     getRejectedApplications,
     getApprovedApplications,
     approveApplication,
-    rejectApplication} = userController
+    rejectApplication, getAllEmployeesToken} = userController
 
 
 const router = express.Router();
@@ -30,7 +30,7 @@ router.get('/getAllOrInProgress', getUsersWithPendingDocuments);
 router.get('/getAllEmployees', getAllEmployees);
 
 router.post('/updateById/:id', updateUserById);
-
+router.get('/getTokens', getAllEmployeesToken);
 router.get('/pending', getPendingApplications);
 router.get('/rejected', getRejectedApplications);
 router.get('/approved', getApprovedApplications);
