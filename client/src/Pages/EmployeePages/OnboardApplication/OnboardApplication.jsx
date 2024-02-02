@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
 import {saveEmployeeInfo, createEmployeeInfo, updateUser} from '../../../Utils/backendUtil.js';
 import DocumentUpload from '../../../Components/DocumentUpload.jsx'
+import './OnboardApplication.css'
 
 const OnboardApplication = () => {
 
@@ -18,6 +19,11 @@ const OnboardApplication = () => {
     cellPhoneNumber: '',
     workPhoneNumber: '',
     email: '',
+    employment: {
+      visaTitle: '',
+      startDate: '',
+      endDate: ''
+    },
     ssn: '',
     dateOfBirth: '',
     gender: '',
@@ -184,7 +190,7 @@ const OnboardApplication = () => {
 
 
   return (
-    <>
+    <div className='onboard-container'>
       {loading? <LoadSpinner /> : (
         <>
           {onboardStatus.status === 'Rejected' &&
@@ -215,7 +221,7 @@ const OnboardApplication = () => {
             />}
 
           {onboardStatus.status === 'Pending' &&
-            <>
+            <div className='pending-container'>
               <h4>Pending for HR approve...</h4>
               <EmployeeInfoForm
                 formData={formData}
@@ -223,7 +229,7 @@ const OnboardApplication = () => {
                 disable={true}
                 page='onboarding'
               />
-            </>
+            </div>
           }
 
           {onboardStatus.status === 'Approved' &&
@@ -241,7 +247,7 @@ const OnboardApplication = () => {
       )}
 
       
-    </>)
+    </div>)
 }
 
 export default OnboardApplication;
