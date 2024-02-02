@@ -11,20 +11,20 @@ export const PrivateRoute = ({ children, requiredRole }) => {
 
   useEffect(() => {
     // Function to check authentication status
-    const checkAuthentication = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/user/auth-status', {
-          withCredentials: true
-        });
-        setIsAuthenticated(response.data.isAuthenticated);
-        setUser(response.data.user);
-      } catch (error) {
-        console.error('Authentication check failed', error);
-        setIsAuthenticated(false);
-      }
-    };
+      const checkAuthentication = async () => {
+        try {
+          const response = await axios.get('http://localhost:3000/user/auth-status', {
+            withCredentials: true
+          });
+          setIsAuthenticated(response.data.isAuthenticated);
+          setUser(response.data.user);
+        } catch (error) {
+          console.error('Authentication check failed', error);
+          setIsAuthenticated(false);
+        }
+      };
 
-    checkAuthentication();
+      checkAuthentication();
   }, []);
 
   if (isAuthenticated === null) {
