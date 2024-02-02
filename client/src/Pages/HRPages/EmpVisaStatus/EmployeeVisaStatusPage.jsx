@@ -181,7 +181,7 @@ function EmployeeVisaStatusPage() {
       if (nextStep) return nextStep;
     }
 
-    return 'Complete';
+    return {'message': 'Complete'};
   };
 
   const handleSendNotification = async (email, type) => {
@@ -257,7 +257,7 @@ function EmployeeVisaStatusPage() {
                           width: 1,
                         }} onClick={() => handlePreviewClick(
                           employee.nextStep.fileUrl, employee.nextStep.fileType,
-                          employee.nextStep.visaId)}>Preview</Button> : <Button
+                          employee.nextStep.visaId)}>Preview</Button> : employee.nextStep.message !== 'Complete' && <Button
                           sx={{
                             width: 1,
                           }} onClick={() => handleSendNotification(employee.email,
