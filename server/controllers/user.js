@@ -1,5 +1,7 @@
 import user from '../models/user.js';
 import document from '../models/document.js';
+import Visastatus from '../models/visastatus.js';
+const {VisaStatus} = Visastatus;
 import {
   generateLoginToken,
   generateRegistrationToken,
@@ -15,7 +17,8 @@ const register = async (req, res) => {
 
 
     let user;
-    if (await User.findOne({ username })) {
+    user = await User.findOne({ username });
+    if (user) {
       return res.status(400).json({ message: 'Username already exists' });
     }
 
@@ -45,9 +48,28 @@ const register = async (req, res) => {
         });
         await newDocument.save();
 
-        // Optionally, link these document IDs back to the user, if your user schema stores document IDs
         user.documents.push(newDocument._id);
       }
+
+      const visaBody = {
+        user: user._id,
+        optReceipt: {
+          status: 'Never Submit',
+        },
+        optEad: {
+          status: 'Never Submit',
+        },
+        i983: {
+          status: 'Never Submit',
+        },
+        i20: {
+          status: 'Never Submit',
+        }
+      }
+      const visa = new VisaStatus(visaBody);
+      user.visaStatus = visa._id;
+
+      await visa.save();
       await user.save();
 
       res.status(201).json({ message: 'User created' });
@@ -99,25 +121,34 @@ const logout = async (req, res) => {
 }
 
 const generateRegistrationTokenAndSendEmail = async (req, res) => {
-
   try {
     const { email } = req.body;
 
-    if (!email ) {
+    if (!email) {
       return res.status(400).json({ message: 'Invalid email address' });
     }
 
     const registrationToken = generateRegistrationToken();
 
+    const empBody = {
+      username: 'tempUsername',
+      email,
+      password: 'tempPassword',
+      role: 'Employee',
+      token: registrationToken,
+    };
+
+    const user = new User(empBody);
+    await user.save();
     await sendEmail(email, registrationToken);
 
     res.status(200).json({ message: 'Registration token sent' });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
 
 const generateNotificationEmail = async (req, res) => {
 
