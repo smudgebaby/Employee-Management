@@ -11,7 +11,6 @@ export const PrivateRoute = ({ children, requiredRole }) => {
 
   useEffect(() => {
     // Function to check authentication status
-    if (requiredRole !== '') {
       const checkAuthentication = async () => {
         try {
           const response = await axios.get('http://localhost:3000/user/auth-status', {
@@ -26,7 +25,6 @@ export const PrivateRoute = ({ children, requiredRole }) => {
       };
 
       checkAuthentication();
-    }
   }, []);
 
   if (isAuthenticated === null) {
