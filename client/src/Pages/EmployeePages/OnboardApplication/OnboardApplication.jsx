@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import LoadSpinner from '../../../Components/LoadSpinner/LoadSpinner.jsx';
 import {saveEmployeeInfo, createEmployeeInfo, updateUser} from '../../../Utils/backendUtil.js';
+import DocumentUpload from '../../../Components/DocumentUpload.jsx'
 
 const OnboardApplication = () => {
 
@@ -157,6 +158,7 @@ const OnboardApplication = () => {
     const updatedUser = updateUser(userId, {onboardingStatus: {'status': 'Pending'}})
       if(updatedUser) {
         alert('Submit information successful');
+        window.location.reload();
         setOnboardStatus('Pending');
       } else {
         alert('Error update user');
@@ -188,7 +190,9 @@ const OnboardApplication = () => {
           {onboardStatus.status === 'Rejected' &&
             <div>
               <h4>Rejected, please see feedback and resubmit</h4>
-              <h4>HR Feedback: {onboardStatus.feedback}</h4>
+              {onboardStatus.feedback &&
+                <h4>HR Feedback: {onboardStatus.feedback}</h4> 
+              }
               <EmployeeInfoForm
                 formData={formData}
                 handleChange={handleChange}
@@ -228,8 +232,15 @@ const OnboardApplication = () => {
               <Link to='/' >HOME </Link>
             </div>
           }
+
+        {onboardStatus.status !== 'Approved' &&
+          <DocumentUpload/>
+        }
+        
         </>
       )}
+
+      
     </>)
 }
 
