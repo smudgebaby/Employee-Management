@@ -35,7 +35,7 @@ export const authenticateToken = (req, res, next) => {
 
 export const checkAuthentication = async (req, res) => {
   const cookie = req.headers.cookie;
-  const token = cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+  const token = cookie?.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
 
   if (!token) {
     return res.status(200).json({ isAuthenticated: false });
