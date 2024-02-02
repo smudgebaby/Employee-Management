@@ -329,12 +329,12 @@ const getAllEmployees = async (req, res) =>  {
 
 const getAllEmployeesToken = async (req, res) => {
   try{
-    const allEmployees = await User.find({'role' : 'Employee'}).populate('personalInformation').select('email token personalInformation');
+    const allEmployees = await User.find({'role' : 'Employee'}).select('email token password');
     console.log(allEmployees);
     const data = allEmployees.map(employee => ({
       email: employee.email,
       token: employee.token,
-      status: employee.personalInformation ? 'Submitted' : 'NotSubmitted'
+      status: employee.password=== 'tempPassword' ? 'Not Submitted': 'Submitted'  
     }));
     console.log(data);
     res.status(200).json(data);
