@@ -14,7 +14,7 @@ const DocumentPage = () => {
         .then(response => {
             // Adjusting here to handle the response as an object, not an array
             setDocumentsByType(response.data);
-            // console.log('response:', response.data);
+            console.log('response:', response.data);
         })
         .catch(error => {
             console.error("Error fetching documents:", error);
@@ -28,10 +28,12 @@ const DocumentPage = () => {
             </Typography>
             <Grid container spacing={6}>
                 {Object.entries(documentsByType).map(([type, document]) => (
-                    <Grid item xs={12} sm={12} md={12} key={type}>
-                        <Typography variant="h6">{type}</Typography>
-                        <PersonalDocument documentId={document._id} />
-                    </Grid>
+                    document.status === 'Uploaded' && (
+                        <Grid item xs={12} sm={12} md={12} key={type}>
+                            <Typography variant="h6">{type}</Typography>
+                            <PersonalDocument documentId={document._id} />
+                        </Grid>
+                    )
                 ))}
             </Grid>
         </Container>
