@@ -130,6 +130,19 @@ const EmployeeInformationForm = ({
               <TextField fullWidth label="SSN" variant="outlined" name="ssn" 
               value={formData.ssn || ''} onChange={handleChange} required disabled={disableMode} />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField fullWidth label="Visa title" variant="outlined" name="employment.visaTitle" 
+              value={formData.employment.visaTitle || ''} onChange={handleChange} required disabled={disableMode} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField fullWidth label="start date" variant="outlined" name="employment.startDate" type="date"
+              value={new Date(formData.employment.startDate).toLocaleDateString("en-CA") || ''} onChange={handleChange} required disabled={disableMode} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField fullWidth label="end date" variant="outlined" name="employment.endDate" type="date"
+              value={new Date(formData.employment.endDate).toLocaleDateString("en-CA") || ''} onChange={handleChange} required disabled={disableMode} />
+            </Grid>
             
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset"  disabled={disableMode}>
