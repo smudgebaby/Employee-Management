@@ -87,25 +87,6 @@ const EmployeeInformationForm = ({
 
             <Grid item xs={12} sm={4}>
             </Grid>
-            <Grid item xs={12} sm={6}>
-                <InputLabel id="image-label" sx={{mb: 1}}>Add Image Link</InputLabel>
-                <TextField fullWidth
-                  placeholder="http://" disabled={disableMode}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button component="label" edge="end" disabled={disableMode} >
-                          Upload
-                          <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <ImagePreview imageUrl={imagePreviewUrl} />
-              </Grid>
             
             {/* Address */}
             <Grid item xs={6}>
