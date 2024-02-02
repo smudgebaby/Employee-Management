@@ -214,7 +214,7 @@ const getPendingApplications = async (req, res) => {
   // console.log('pending:');
   try {
     
-    const pendingUsers = await User.find({ 'onboardingStatus.status': 'Pending' })
+    const pendingUsers = await User.find({ 'onboardingStatus.status': 'Pending', 'role':'Employee' })
       .populate('personalInformation')
       .populate('documents')
       .select('username email personalInformation');
@@ -228,7 +228,7 @@ const getPendingApplications = async (req, res) => {
 // Get all rejected onboarding applications
 const getRejectedApplications = async (req, res) => {
   try {
-    const rejectedUsers = await User.find({ 'onboardingStatus.status': 'Rejected' })
+    const rejectedUsers = await User.find({ 'onboardingStatus.status': 'Rejected', 'role':'Employee'  })
       .populate('personalInformation')
       .populate('documents')
       .select('username email personalInformation onboardingStatus.feedback');
@@ -242,7 +242,7 @@ const getRejectedApplications = async (req, res) => {
 // Get all approved onboarding applications
 const getApprovedApplications = async (req, res) => {
   try {
-    const approvedUsers = await User.find({ 'onboardingStatus.status': 'Approved' })
+    const approvedUsers = await User.find({ 'onboardingStatus.status': 'Approved', 'role':'Employee'  })
       .populate('personalInformation')
       .populate('documents')
       .select('username email personalInformation');
