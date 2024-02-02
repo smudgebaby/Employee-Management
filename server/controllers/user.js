@@ -330,13 +330,13 @@ const getAllEmployees = async (req, res) =>  {
 const getAllEmployeesToken = async (req, res) => {
   try{
     const allEmployees = await User.find({'role' : 'Employee'}).select('email token password');
-    console.log(allEmployees);
+    // console.log(allEmployees);
     const data = allEmployees.map(employee => ({
       email: employee.email,
       token: employee.token,
       status: employee.password=== 'tempPassword' ? 'Not Submitted': 'Submitted'  
     }));
-    console.log(data);
+    // console.log(data);
     res.status(200).json(data);
   }
   catch(error){
