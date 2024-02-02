@@ -131,7 +131,7 @@ const generateRegistrationTokenAndSendEmail = async (req, res) => {
     const registrationToken = generateRegistrationToken();
 
     const empBody = {
-      username: 'tempUsername',
+      username: registrationToken,
       email,
       password: 'tempPassword',
       role: 'Employee',
@@ -260,7 +260,7 @@ const approveApplication = async (req, res) => {
     await User.findByIdAndUpdate(userId, {
       'onboardingStatus.status': 'Approved'
     });
-    
+    await VisaStatus.findOneAndUpdate({user: userId}, {'optReceipt.status': 'Approved', 'optEad.status': 'Please Submit'});
     res.status(200).json({ message: 'Application approved successfully.' });
   } catch (error) {
     res.status(500).json({ message: error.message });
